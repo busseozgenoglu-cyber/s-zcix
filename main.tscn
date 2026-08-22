@@ -340,7 +340,7 @@ theme_override_styles/panel = SubResource("S_hint")
 layout_mode = 2
 theme_override_colors/font_color = Color(0.42, 0.27, 0.61, 1)
 theme_override_font_sizes/font_size = 18
-text = "IPUCU: Keci = G ile baslayan kelime"
+text = "IPUCU: Vizon = M ile baslayan kelime"
 autowrap_mode = 2
 
 [node name="Center" type="CenterContainer" parent="." unique_id=867860719]
@@ -388,7 +388,7 @@ theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
 theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 34
 theme_override_styles/normal = SubResource("TileStyle_1")
-text = "G"
+text = "M"
 
 [node name="Tile2" type="Button" parent="Center/BoardBackdrop/Board" unique_id=99540123]
 custom_minimum_size = Vector2(79, 79)
@@ -448,7 +448,7 @@ theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
 theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 34
 theme_override_styles/normal = SubResource("TileStyle_6")
-text = "O"
+text = "I"
 
 [node name="Tile7" type="Button" parent="Center/BoardBackdrop/Board" unique_id=1235786168]
 custom_minimum_size = Vector2(79, 79)
@@ -508,7 +508,7 @@ theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
 theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 34
 theme_override_styles/normal = SubResource("TileStyle_3")
-text = "A"
+text = "N"
 
 [node name="Tile12" type="Button" parent="Center/BoardBackdrop/Board" unique_id=23032155]
 custom_minimum_size = Vector2(79, 79)
@@ -568,7 +568,7 @@ theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
 theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 34
 theme_override_styles/normal = SubResource("TileStyle_0")
-text = "T"
+text = "K"
 
 [node name="Tile17" type="Button" parent="Center/BoardBackdrop/Board" unique_id=2002271204]
 custom_minimum_size = Vector2(79, 79)
