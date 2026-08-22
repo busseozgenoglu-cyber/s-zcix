@@ -1,0 +1,858 @@
+[gd_scene format=3 uid="uid://bqikadon2mgpv"]
+
+[ext_resource type="Script" uid="uid://581v8bdf8w2u" path="res://scripts/word_board.gd" id="1_board"]
+[ext_resource type="Script" uid="uid://bptqvjshaf67i" path="res://scripts/word_illustration.gd" id="2_ill"]
+[ext_resource type="Script" uid="uid://dsh35ktevq3mg" path="res://scripts/animal_backdrop.gd" id="3_animals"]
+[ext_resource type="Texture2D" uid="uid://btjhkweuin1n7" path="res://assets/images/img-69715444-5126-4ee3-bc65-b090abf1b32e-1787003493078-0_1787003493078_an695b00.png" id="4_cat"]
+[ext_resource type="Texture2D" uid="uid://ckh8mr2qa4kpa" path="res://assets/images/img-69715444-5126-4ee3-bc65-b090abf1b32e-1787003493169-0_1787003493169_yipjbn76.png" id="5_dog"]
+[ext_resource type="Texture2D" uid="uid://uw4vn0lkn6ni" path="res://assets/images/img-69715444-5126-4ee3-bc65-b090abf1b32e-1787003493226-0_1787003493226_2bxuf32l.png" id="6_rabbit"]
+[ext_resource type="Script" uid="uid://b6kwadki8hog3" path="res://scripts/playful_backdrop.gd" id="7_playful"]
+
+[sub_resource type="StyleBoxFlat" id="S_reset"]
+bg_color = Color(0.153, 0.682, 0.376, 1)
+corner_radius_top_left = 18
+corner_radius_top_right = 18
+corner_radius_bottom_right = 18
+corner_radius_bottom_left = 18
+
+[sub_resource type="StyleBoxFlat" id="S_reset_pressed"]
+bg_color = Color(0.118, 0.518, 0.286, 1)
+corner_radius_top_left = 18
+corner_radius_top_right = 18
+corner_radius_bottom_right = 18
+corner_radius_bottom_left = 18
+
+[sub_resource type="StyleBoxFlat" id="S_reset_hover"]
+bg_color = Color(0.18, 0.8, 0.44, 1)
+corner_radius_top_left = 18
+corner_radius_top_right = 18
+corner_radius_bottom_right = 18
+corner_radius_bottom_left = 18
+
+[sub_resource type="StyleBoxFlat" id="S_hint"]
+content_margin_left = 14.0
+content_margin_top = 10.0
+content_margin_right = 14.0
+content_margin_bottom = 10.0
+bg_color = Color(0.91, 0.95, 1, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.42, 0.27, 0.61, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[sub_resource type="StyleBoxFlat" id="S_board"]
+content_margin_left = 14.0
+content_margin_top = 14.0
+content_margin_right = 14.0
+content_margin_bottom = 14.0
+bg_color = Color(1, 0.969, 0.878, 1)
+border_width_left = 6
+border_width_top = 6
+border_width_right = 6
+border_width_bottom = 6
+border_color = Color(1, 0.624, 0.263, 1)
+corner_radius_top_left = 28
+corner_radius_top_right = 28
+corner_radius_bottom_right = 28
+corner_radius_bottom_left = 28
+
+[sub_resource type="StyleBoxFlat" id="TileStyle_0"]
+bg_color = Color(1, 0.42, 0.42, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+
+[sub_resource type="StyleBoxFlat" id="TileStyle_1"]
+bg_color = Color(1, 0.624, 0.263, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+
+[sub_resource type="StyleBoxFlat" id="TileStyle_2"]
+bg_color = Color(1, 0.824, 0.247, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+
+[sub_resource type="StyleBoxFlat" id="TileStyle_3"]
+bg_color = Color(0.18, 0.8, 0.44, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+
+[sub_resource type="StyleBoxFlat" id="TileStyle_4"]
+bg_color = Color(0.102, 0.737, 0.612, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+
+[sub_resource type="StyleBoxFlat" id="TileStyle_5"]
+bg_color = Color(0.271, 0.667, 0.949, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+
+[sub_resource type="StyleBoxFlat" id="TileStyle_6"]
+bg_color = Color(0.647, 0.369, 0.918, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+
+[sub_resource type="StyleBoxFlat" id="TileStyle_7"]
+bg_color = Color(1, 0.467, 0.663, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+
+[sub_resource type="StyleBoxFlat" id="S_reveal_panel"]
+content_margin_left = 24.0
+content_margin_top = 20.0
+content_margin_right = 24.0
+content_margin_bottom = 20.0
+bg_color = Color(1, 0.988, 0.937, 1)
+border_width_left = 8
+border_width_top = 8
+border_width_right = 8
+border_width_bottom = 8
+border_color = Color(1, 0.624, 0.263, 1)
+corner_radius_top_left = 32
+corner_radius_top_right = 32
+corner_radius_bottom_right = 32
+corner_radius_bottom_left = 32
+shadow_color = Color(0.2, 0.12, 0.05, 0.25)
+shadow_size = 12
+
+[sub_resource type="StyleBoxFlat" id="S_illustration"]
+bg_color = Color(1, 1, 1, 0.85)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.95, 0.78, 0.42, 1)
+corner_radius_top_left = 24
+corner_radius_top_right = 24
+corner_radius_bottom_right = 24
+corner_radius_bottom_left = 24
+
+[sub_resource type="StyleBoxFlat" id="S_paywall_panel"]
+content_margin_left = 28.0
+content_margin_top = 24.0
+content_margin_right = 28.0
+content_margin_bottom = 24.0
+bg_color = Color(0.16, 0.1, 0.34, 1)
+border_width_left = 8
+border_width_top = 8
+border_width_right = 8
+border_width_bottom = 8
+border_color = Color(1, 0.84, 0.2, 1)
+corner_radius_top_left = 32
+corner_radius_top_right = 32
+corner_radius_bottom_right = 32
+corner_radius_bottom_left = 32
+shadow_color = Color(0.1, 0.03, 0.2, 0.4)
+shadow_size = 14
+
+[node name="WordBlast" type="Control" unique_id=395357007]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_board")
+
+[node name="Background" type="ColorRect" parent="." unique_id=381828597]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(1, 0.92, 0.7, 1)
+
+[node name="PlayfulBackdrop" type="Control" parent="." unique_id=1665562135]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("7_playful")
+
+[node name="AnimalBackdrop" type="Control" parent="." unique_id=436099488]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("3_animals")
+
+[node name="Cat" type="TextureRect" parent="AnimalBackdrop" unique_id=2142678336]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -160.0
+offset_top = 110.0
+offset_right = -40.0
+offset_bottom = 230.0
+grow_horizontal = 0
+mouse_filter = 2
+texture = ExtResource("4_cat")
+expand_mode = 1
+
+[node name="Dog" type="TextureRect" parent="AnimalBackdrop" unique_id=2060617316]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 40.0
+offset_top = -160.0
+offset_right = 160.0
+offset_bottom = -40.0
+grow_horizontal = 0
+grow_vertical = 0
+mouse_filter = 2
+texture = ExtResource("5_dog")
+expand_mode = 1
+
+[node name="Rabbit" type="TextureRect" parent="AnimalBackdrop" unique_id=1157364470]
+layout_mode = 1
+offset_left = 40.0
+offset_top = 150.0
+offset_right = 160.0
+offset_bottom = 270.0
+mouse_filter = 2
+texture = ExtResource("6_rabbit")
+expand_mode = 1
+
+[node name="Title" type="Label" parent="." unique_id=638470716]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -360.0
+offset_top = 8.0
+offset_right = 360.0
+offset_bottom = 52.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0.957, 0.231, 0.412, 1)
+theme_override_font_sizes/font_size = 40
+text = "KELIME OYUNU"
+horizontal_alignment = 1
+
+[node name="WordLabel" type="Label" parent="." unique_id=1085874978]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -360.0
+offset_top = 54.0
+offset_right = 360.0
+offset_bottom = 84.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0.85, 0.52, 0.04, 1)
+theme_override_font_sizes/font_size = 26
+horizontal_alignment = 1
+
+[node name="LevelLabel" type="Label" parent="." unique_id=1993370283]
+layout_mode = 1
+offset_left = 24.0
+offset_top = 84.0
+offset_right = 300.0
+offset_bottom = 114.0
+theme_override_colors/font_color = Color(0.42, 0.27, 0.61, 1)
+theme_override_font_sizes/font_size = 22
+text = "SEVIYE 1  0/100"
+
+[node name="ScoreLabel" type="Label" parent="." unique_id=1487643765]
+layout_mode = 1
+offset_left = 24.0
+offset_top = 12.0
+offset_right = 300.0
+offset_bottom = 50.0
+theme_override_colors/font_color = Color(0.42, 0.27, 0.61, 1)
+theme_override_font_sizes/font_size = 30
+text = "PUAN  0"
+
+[node name="ComboLabel" type="Label" parent="." unique_id=1919310333]
+layout_mode = 1
+offset_left = 24.0
+offset_top = 54.0
+offset_right = 300.0
+offset_bottom = 82.0
+theme_override_colors/font_color = Color(0.42, 0.27, 0.61, 1)
+theme_override_font_sizes/font_size = 20
+
+[node name="ResetButton" type="Button" parent="." unique_id=1867479138]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -150.0
+offset_top = 12.0
+offset_right = -24.0
+offset_bottom = 56.0
+grow_horizontal = 0
+focus_mode = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("S_reset")
+theme_override_styles/pressed = SubResource("S_reset_pressed")
+theme_override_styles/hover = SubResource("S_reset_hover")
+text = "YENIDEN BASLA"
+
+[node name="HintPanel" type="PanelContainer" parent="." unique_id=2013407043]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 24.0
+offset_top = -176.0
+offset_right = 316.0
+offset_bottom = -92.0
+grow_vertical = 0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("S_hint")
+
+[node name="HintLabel" type="Label" parent="HintPanel" unique_id=780104854]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.42, 0.27, 0.61, 1)
+theme_override_font_sizes/font_size = 18
+text = "IPUCU: Keci = G ile baslayan kelime"
+autowrap_mode = 2
+
+[node name="Center" type="CenterContainer" parent="." unique_id=867860719]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 96.0
+offset_bottom = -84.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="BoardBackdrop" type="PanelContainer" parent="Center" unique_id=1247350436]
+layout_mode = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("S_board")
+
+[node name="Board" type="GridContainer" parent="Center/BoardBackdrop" unique_id=954047805]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/h_separation = 8
+theme_override_constants/v_separation = 8
+columns = 5
+
+[node name="Tile0" type="Button" parent="Center/BoardBackdrop/Board" unique_id=1030017666]
+custom_minimum_size = Vector2(79, 79)
+layout_mode = 2
+focus_mode = 0
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 34
+theme_override_styles/normal = SubResource("TileStyle_0")
+text = "E"
+
+[node name="Tile1" type="Button" parent="Center/BoardBackdrop/Board" unique_id=231954125]
+custom_minimum_size = Vector2(79, 79)
+layout_mode = 2
+focus_mode = 0
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 34
+theme_override_styles/normal = SubResource("TileStyle_1")
+text = "G"
+
+[node name="Tile2" type="Button" parent="Center/BoardBackdrop/Board" unique_id=99540123]
+custom_minimum_size = Vector2(79, 79)
+layout_mode = 2
+focus_mode = 0
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 34
+theme_override_styles/normal = SubResource("TileStyle_2")
+text = "Z"
+
+[node name="Tile3" type="Button" parent="Center/BoardBackdrop/Board" unique_id=1913710021]
+custom_minimum_size = Vector2(79, 79)
+layout_mode = 2
+focus_mode = 0
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 34
+theme_override_styles/normal = SubResource("TileStyle_3")
+text = "R"
+
+[node name="Tile4" type="Button" parent="Center/BoardBackdrop/Board" unique_id=278853446]
+custom_minimum_size = Vector2(79, 79)
+layout_mode = 2
+focus_mode = 0
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 34
+theme_override_styles/normal = SubResource("TileStyle_4")
+text = "D"
+
+[node name="Tile5" type="Button" parent="Center/BoardBackdrop/Board" unique_id=89037212]
+custom_minimum_size = Vector2(79, 79)
+layout_mode = 2
+focus_mode = 0
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 34
+theme_override_styles/normal = SubResource("TileStyle_5")
+text = "S"
+
+[node name="Tile6" type="Button" parent="Center/BoardBackdrop/Board" unique_id=95656793]
+custom_minimum_size = Vector2(79, 79)
+layout_mode = 2
+focus_mode = 0
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 34
+theme_override_styles/normal = SubResource("TileStyle_6")
+text = "O"
+
+[node name="Tile7" type="Button" parent="Center/BoardBackdrop/Board" unique_id=1235786168]
+custom_minimum_size = Vector2(79, 79)
+layout_mode = 2
+focus_mode = 0
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 34
+theme_override_styles/normal = SubResource("TileStyle_7")
+text = "G"
+
+[node name="Tile8" type="Button" parent="Center/BoardBackdrop/Board" unique_id=1694698565]
+custom_minimum_size = Vector2(79, 79)
+layout_mode = 2
+focus_mode = 0
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 34
+theme_override_styles/normal = SubResource("TileStyle_0")
+text = "T"
+
+[node name="Tile9" type="Button" parent="Center/BoardBackdrop/Board" unique_id=1530716389]
+custom_minimum_size = Vector2(79, 79)
+layout_mode = 2
+focus_mode = 0
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 34
+theme_override_styles/normal = SubResource("TileStyle_1")
+text = "C"
+
+[node name="Tile10" type="Button" parent="Center/BoardBackdrop/Board" unique_id=66666437]
+custom_minimum_size = Vector2(79, 79)
+layout_mode = 2
+focus_mode = 0
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 34
+theme_override_styles/normal = SubResource("TileStyle_2")
+text = "M"
+
+[node name="Tile11" type="Button" parent="Center/BoardBackdrop/Board" unique_id=894232278]
+custom_minimum_size = Vector2(79, 79)
+layout_mode = 2
+focus_mode = 0
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 34
+theme_override_styles/normal = SubResource("TileStyle_3")
+text = "A"
+
+[node name="Tile12" type="Button" parent="Center/BoardBackdrop/Board" unique_id=23032155]
+custom_minimum_size = Vector2(79, 79)
+layout_mode = 2
+focus_mode = 0
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 34
+theme_override_styles/normal = SubResource("TileStyle_4")
+text = "A"
+
+[node name="Tile13" type="Button" parent="Center/BoardBackdrop/Board" unique_id=318518506]
+custom_minimum_size = Vector2(79, 79)
+layout_mode = 2
+focus_mode = 0
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 34
+theme_override_styles/normal = SubResource("TileStyle_5")
+text = "N"
+
+[node name="Tile14" type="Button" parent="Center/BoardBackdrop/Board" unique_id=1732255672]
+custom_minimum_size = Vector2(79, 79)
+layout_mode = 2
+focus_mode = 0
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 34
+theme_override_styles/normal = SubResource("TileStyle_6")
+text = "F"
+
+[node name="Tile15" type="Button" parent="Center/BoardBackdrop/Board" unique_id=35544600]
+custom_minimum_size = Vector2(79, 79)
+layout_mode = 2
+focus_mode = 0
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 34
+theme_override_styles/normal = SubResource("TileStyle_7")
+text = "T"
+
+[node name="Tile16" type="Button" parent="Center/BoardBackdrop/Board" unique_id=1621539079]
+custom_minimum_size = Vector2(79, 79)
+layout_mode = 2
+focus_mode = 0
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 34
+theme_override_styles/normal = SubResource("TileStyle_0")
+text = "T"
+
+[node name="Tile17" type="Button" parent="Center/BoardBackdrop/Board" unique_id=2002271204]
+custom_minimum_size = Vector2(79, 79)
+layout_mode = 2
+focus_mode = 0
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 34
+theme_override_styles/normal = SubResource("TileStyle_1")
+text = "X"
+
+[node name="Tile18" type="Button" parent="Center/BoardBackdrop/Board" unique_id=115493152]
+custom_minimum_size = Vector2(79, 79)
+layout_mode = 2
+focus_mode = 0
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 34
+theme_override_styles/normal = SubResource("TileStyle_2")
+text = "U"
+
+[node name="Tile19" type="Button" parent="Center/BoardBackdrop/Board" unique_id=1747758696]
+custom_minimum_size = Vector2(79, 79)
+layout_mode = 2
+focus_mode = 0
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 34
+theme_override_styles/normal = SubResource("TileStyle_3")
+text = "N"
+
+[node name="Tile20" type="Button" parent="Center/BoardBackdrop/Board" unique_id=1265568378]
+custom_minimum_size = Vector2(79, 79)
+layout_mode = 2
+focus_mode = 0
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 34
+theme_override_styles/normal = SubResource("TileStyle_4")
+text = "A"
+
+[node name="Tile21" type="Button" parent="Center/BoardBackdrop/Board" unique_id=1479303895]
+custom_minimum_size = Vector2(79, 79)
+layout_mode = 2
+focus_mode = 0
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 34
+theme_override_styles/normal = SubResource("TileStyle_5")
+text = "O"
+
+[node name="Tile22" type="Button" parent="Center/BoardBackdrop/Board" unique_id=998174840]
+custom_minimum_size = Vector2(79, 79)
+layout_mode = 2
+focus_mode = 0
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 34
+theme_override_styles/normal = SubResource("TileStyle_6")
+text = "E"
+
+[node name="Tile23" type="Button" parent="Center/BoardBackdrop/Board" unique_id=1999903274]
+custom_minimum_size = Vector2(79, 79)
+layout_mode = 2
+focus_mode = 0
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 34
+theme_override_styles/normal = SubResource("TileStyle_7")
+text = "Q"
+
+[node name="Tile24" type="Button" parent="Center/BoardBackdrop/Board" unique_id=290161125]
+custom_minimum_size = Vector2(79, 79)
+layout_mode = 2
+focus_mode = 0
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 34
+theme_override_styles/normal = SubResource("TileStyle_0")
+text = "N"
+
+[node name="FeedbackLabel" type="Label" parent="." unique_id=1461647061]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -560.0
+offset_top = -78.0
+offset_right = 560.0
+offset_bottom = -24.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_colors/font_color = Color(0.18431373, 0.3647059, 0.5411765, 1)
+theme_override_font_sizes/font_size = 24
+text = "Harfleri surukleyip kelime yap"
+horizontal_alignment = 1
+
+[node name="RevealOverlay" type="Control" parent="." unique_id=1003251072]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Dim" type="ColorRect" parent="RevealOverlay" unique_id=439158491]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.18, 0.08, 0.3, 0.55)
+
+[node name="RevealCenter" type="CenterContainer" parent="RevealOverlay" unique_id=825747867]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="RevealPanel" type="PanelContainer" parent="RevealOverlay/RevealCenter" unique_id=552932804]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("S_reveal_panel")
+
+[node name="VBox" type="VBoxContainer" parent="RevealOverlay/RevealCenter/RevealPanel" unique_id=709513350]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 12
+
+[node name="RevealWordLabel" type="Label" parent="RevealOverlay/RevealCenter/RevealPanel/VBox" unique_id=1848242103]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.957, 0.231, 0.412, 1)
+theme_override_font_sizes/font_size = 54
+text = "WORD"
+horizontal_alignment = 1
+
+[node name="RevealMeaningLabel" type="Label" parent="RevealOverlay/RevealCenter/RevealPanel/VBox" unique_id=1297367387]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.85, 0.52, 0.04, 1)
+theme_override_font_sizes/font_size = 34
+text = "Anlami"
+horizontal_alignment = 1
+
+[node name="PronunciationLabel" type="Label" parent="RevealOverlay/RevealCenter/RevealPanel/VBox" unique_id=631867964]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.18431373, 0.3647059, 0.5411765, 1)
+theme_override_font_sizes/font_size = 20
+text = "Okuyus"
+horizontal_alignment = 1
+
+[node name="ListenButton" type="Button" parent="RevealOverlay/RevealCenter/RevealPanel/VBox" unique_id=237177843]
+layout_mode = 2
+focus_mode = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 24
+theme_override_styles/normal = SubResource("S_reset")
+theme_override_styles/pressed = SubResource("S_reset_pressed")
+theme_override_styles/hover = SubResource("S_reset_hover")
+text = "DINLE"
+
+[node name="IllustrationCard" type="PanelContainer" parent="RevealOverlay/RevealCenter/RevealPanel/VBox" unique_id=920431116]
+layout_mode = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("S_illustration")
+
+[node name="Illustration" type="Control" parent="RevealOverlay/RevealCenter/RevealPanel/VBox/IllustrationCard" unique_id=647977524]
+custom_minimum_size = Vector2(190, 190)
+layout_mode = 2
+mouse_filter = 2
+script = ExtResource("2_ill")
+
+[node name="RevealHint" type="Label" parent="RevealOverlay/RevealCenter/RevealPanel/VBox" unique_id=97547863]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.42, 0.27, 0.61, 1)
+theme_override_font_sizes/font_size = 22
+text = "Devam etmek icin dokun"
+horizontal_alignment = 1
+
+[node name="PaywallOverlay" type="Control" parent="." unique_id=2053071454]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Dim" type="ColorRect" parent="PaywallOverlay" unique_id=1972278358]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.12, 0.05, 0.22, 0.72)
+
+[node name="PaywallCenter" type="CenterContainer" parent="PaywallOverlay" unique_id=388877903]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="PaywallPanel" type="PanelContainer" parent="PaywallOverlay/PaywallCenter" unique_id=2069776538]
+custom_minimum_size = Vector2(360, 0)
+layout_mode = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("S_paywall_panel")
+
+[node name="VBox" type="VBoxContainer" parent="PaywallOverlay/PaywallCenter/PaywallPanel" unique_id=41192734]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 14
+
+[node name="PaywallTitleLabel" type="Label" parent="PaywallOverlay/PaywallCenter/PaywallPanel/VBox" unique_id=86010253]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.84, 0.2, 1)
+theme_override_font_sizes/font_size = 34
+text = "4. SEVIYE KILITLI"
+horizontal_alignment = 1
+
+[node name="PaywallPriceLabel" type="Label" parent="PaywallOverlay/PaywallCenter/PaywallPanel/VBox" unique_id=878728837]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 26
+text = "Prototip fiyat: 19,99 TL"
+horizontal_alignment = 1
+
+[node name="PaywallMessageLabel" type="Label" parent="PaywallOverlay/PaywallCenter/PaywallPanel/VBox" unique_id=703580313]
+visible = false
+layout_mode = 2
+theme_override_colors/font_color = Color(0.42, 1, 0.62, 1)
+theme_override_font_sizes/font_size = 20
+text = "Demo: Gercek odeme yok"
+horizontal_alignment = 1
+
+[node name="BuyButton" type="Button" parent="PaywallOverlay/PaywallCenter/PaywallPanel/VBox" unique_id=480654732]
+layout_mode = 2
+focus_mode = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 24
+theme_override_styles/normal = SubResource("S_reset")
+theme_override_styles/pressed = SubResource("S_reset_pressed")
+theme_override_styles/hover = SubResource("S_reset_hover")
+text = "SATIN AL"
+
+[node name="PaywallCloseButton" type="Button" parent="PaywallOverlay/PaywallCenter/PaywallPanel/VBox" unique_id=1989705623]
+layout_mode = 2
+focus_mode = 0
+theme_override_colors/font_color = Color(0.42, 0.27, 0.61, 1)
+theme_override_colors/font_pressed_color = Color(0.42, 0.27, 0.61, 1)
+theme_override_colors/font_hover_color = Color(0.42, 0.27, 0.61, 1)
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("S_hint")
+text = "GERI DON"

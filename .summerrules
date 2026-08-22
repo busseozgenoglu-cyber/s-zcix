@@ -1,0 +1,4 @@
+The game is a colorful child-focused English vocabulary word game using simple basic words.
+Valid words reveal their English spelling, Turkish meaning, and a playful animated illustration before play continues.
+The UI is Turkish (PUAN, KOMBO, IPUCU, DINLE, YENIDEN BASLA), the rotating vocabulary bank holds 100+ simple words, a corner hint guides a current target, and native Godot text-to-speech pronounces found words with a visible letter-guide fallback.
+The vocabulary bank holds 2000 words across 20 levels; levels 1-3 are free and level 4+ uses a prototype non-billing lock screen.

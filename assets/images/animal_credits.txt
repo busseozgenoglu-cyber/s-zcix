@@ -1,0 +1,19 @@
+Background animal decorations - credits and license
+
+These decorative 2D animal sprites were found through the Summer asset store
+(searchAssetStore) and imported into this project as background decorations
+for the Word Blast scene. They are role-neutral decorations, not playable
+characters.
+
+Assets:
+- Cat Animal Token
+  asset id: 733c37b1-4e53-469c-a412-bf9a615b9268
+  file: res://assets/images/img-69715444-5126-4ee3-bc65-b090abf1b32e-1787003493078-0_1787003493078_an695b00.png
+- Dog Animal Token
+  asset id: a01a16db-ff6b-4207-b574-3db23d9a4222
+  file: res://assets/images/img-69715444-5126-4ee3-bc65-b090abf1b32e-1787003493169-0_1787003493169_yipjbn76.png
+- Rabbit Animal Token
+  asset id: eb7d5223-33b3-4414-a88b-5ca68bddd0b2
+  file: res://assets/images/img-69715444-5126-4ee3-bc65-b090abf1b32e-1787003493226-0_1787003493226_2bxuf32l.png
+
+License: free (Summer Engine free-license assets). No attribution required.
