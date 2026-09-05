@@ -1,0 +1,48 @@
+extends RefCounted
+## Çekirdek kelimeler: her seviyenin hedef kelimeleri, Günün Kelimeleri ve
+## Tekrar Testi çeldiricileri yalnızca bu elle seçilmiş, günlük hayatta sık
+## kullanılan İngilizce kelimelerden gelir. 100 kelimelik geniş havuz ise
+## tahtada tesadüfen oluşan kelimelerin kabul edilmesi için sözlük olarak kalır.
+
+const CORE := {
+	1: ["CAT", "DOG", "COW", "PIG", "HEN", "DUCK", "FISH", "BIRD", "LION", "BEAR", "FOX", "WOLF",
+		"DEER", "GOAT", "HORSE", "SHEEP", "FROG", "OWL", "MOUSE", "SNAKE", "TIGER", "ZEBRA", "PANDA", "WHALE"],
+	2: ["RED", "BLUE", "GREEN", "PINK", "BLACK", "WHITE", "BROWN", "GRAY", "EYE", "EAR", "ARM", "LEG",
+		"HAND", "FOOT", "NOSE", "HAIR", "HEAD", "TOOTH", "FACE", "NECK", "KNEE", "HEART", "BALL", "BOX"],
+	3: ["APPLE", "MILK", "EGG", "CAKE", "BREAD", "RICE", "SOUP", "JUICE", "WATER", "PEAR", "PLUM", "GRAPE",
+		"LEMON", "HONEY", "CORN", "PIE", "NUT", "MEAT", "JAM", "TEA", "BEAN", "SALT", "PIZZA", "PASTA"],
+	4: ["BED", "DESK", "DOOR", "HOME", "LAMP", "ROOM", "WALL", "CHAIR", "HOUSE", "TABLE", "CUP", "KEY",
+		"PAN", "POT", "BOWL", "FORK", "SPOON", "KNIFE", "SOFA", "ROOF", "SOAP", "TOWEL", "CLOCK", "SHELF"],
+	5: ["RUN", "TOY", "DRUM", "KITE", "PLAY", "SING", "STAR", "WALK", "DANCE", "CAR", "BOAT", "GAME",
+		"DOLL", "ROPE", "TEAM", "RACE", "KING", "QUEEN", "ROBOT", "TRAIN", "TRUCK", "PLANE", "PIANO", "SMILE"],
+	6: ["ART", "BAG", "MAP", "PEN", "BOOK", "DRAW", "MATH", "NAME", "READ", "TEST", "CLASS", "WRITE",
+		"BELL", "LIST", "NOTE", "PAGE", "PLAN", "SONG", "WORD", "WORK", "PAPER", "PAINT", "MUSIC", "STORY"],
+	7: ["SEA", "SUN", "HILL", "LAKE", "LEAF", "MOON", "RAIN", "ROCK", "SNOW", "TREE", "WIND", "CLOUD",
+		"GRASS", "RIVER", "FIRE", "FARM", "CAVE", "COLD", "DARK", "SEED", "ROOT", "BEACH", "STONE", "STORM"],
+	8: ["EAT", "HOP", "SIT", "COOK", "JUMP", "SWIM", "SLEEP", "ASK", "SEE", "SAY", "BAKE", "CALL",
+		"FEEL", "GIVE", "HEAR", "HELP", "KICK", "KNOW", "LOOK", "MAKE", "OPEN", "PULL", "PUSH", "TALK"],
+	9: ["CAP", "HAT", "BELT", "COAT", "DRESS", "SHIRT", "SKIRT", "SHOES", "SOCKS", "PANTS", "JEANS", "SCARF",
+		"GLOVE", "BOOTS", "VEST", "ROBE", "WOOL", "SILK", "WEAR", "SEW", "PIN", "HOOD", "APRON", "PURSE"],
+	10: ["ZOO", "BANK", "CITY", "PARK", "POOL", "PORT", "ROAD", "SHOP", "TOWN", "MALL", "HOTEL", "STORE",
+		"TOWER", "BAY", "BARN", "LANE", "PIER", "PEAK", "DOCK", "INN", "ARENA", "PLAZA", "STATE", "FILM"],
+	11: ["BUS", "CAB", "GAS", "JET", "OIL", "VAN", "BIKE", "CART", "FLAG", "FUEL", "JEEP", "SEAT",
+		"SHIP", "SLED", "STOP", "TAXI", "TIRE", "TRAM", "WING", "BRAKE", "CANOE", "FERRY", "METRO", "RADIO"],
+	12: ["DAD", "MOM", "BABY", "BOY", "MAN", "SON", "GIRL", "AUNT", "LADY", "TWIN", "TEEN", "ADULT",
+		"CHILD", "CHIEF", "GUEST", "HUMAN", "NURSE", "UNCLE", "WOMAN", "BRIDE", "CROWD", "BOSS", "CHEF", "PAL"],
+	13: ["SAD", "BAD", "CRY", "FUN", "JOY", "MAD", "SHY", "CALM", "FEAR", "GLAD", "GOOD", "HOPE",
+		"HURT", "KIND", "LIKE", "LOVE", "NICE", "PAIN", "SAFE", "SICK", "WISH", "ANGRY", "BRAVE", "HAPPY"],
+	14: ["ONE", "TWO", "SIX", "TEN", "DAY", "NOW", "FIVE", "FOUR", "NINE", "HALF", "HOUR", "LATE",
+		"LONG", "WEEK", "YEAR", "ZERO", "EARLY", "EIGHT", "FIRST", "MONTH", "NIGHT", "THREE", "SEVEN", "TODAY"],
+	15: ["BIG", "DRY", "FAT", "HOT", "LOW", "NEW", "OLD", "WET", "COOL", "DEEP", "FLAT", "FREE",
+		"FULL", "HARD", "HIGH", "HUGE", "LOUD", "POOR", "RICH", "SOFT", "TALL", "THIN", "WARM", "WIDE"],
+	16: ["MAID", "POET", "ACTOR", "BAKER", "BOXER", "CLERK", "GUARD", "JUDGE", "MAYOR", "MINER", "RACER", "RIDER",
+		"MASON", "MONK", "PAY", "POWER", "PRICE", "PHONE", "PARTY", "PET", "OWN", "OFFER", "ONLY", "OTHER"],
+	17: ["DIG", "HUG", "HUM", "LAY", "NOD", "PAT", "PUT", "RUB", "SET", "DROP", "FEED", "HUNT",
+		"KISS", "PICK", "WAVE", "KNEEL", "PLACE", "POINT", "RINSE", "SPEAK", "STAND", "REACH", "RELAX", "SAVE"],
+	18: ["BOLD", "BUSY", "LAZY", "PURE", "RUDE", "TAME", "UGLY", "WISE", "ALERT", "CRISP", "CRUEL", "EAGER",
+		"FANCY", "FUNNY", "GRAND", "PLAIN", "SILLY", "SMART", "SPICY", "TASTY", "TIMID", "YUMMY", "SHUT", "SPEED"],
+	19: ["ICE", "INK", "JAR", "OAR", "COIN", "GIFT", "HOOK", "NEST", "YARN", "GLOBE", "SHELL", "STAIR",
+		"STRAW", "SWORD", "TANK", "TAIL", "TALE", "TEXT", "THING", "TEETH", "STUFF", "STYLE", "SWEAT", "SUIT"],
+	20: ["OCEAN", "TIME", "TOOL", "TILE", "TIDE", "TRIP", "TRUE", "TOUR", "TITLE", "TOPIC", "TRAP", "TRAY",
+		"TREAT", "TRICK", "TULIP", "TWIG", "TYPE", "UNDER", "UNIT", "USE", "VALUE", "VAST", "TRUTH", "TWIST"],
+}

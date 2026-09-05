@@ -118,12 +118,12 @@ func _make_options(answer: String) -> Array[String]:
 		if absi(w.length() - answer.length()) <= 2:
 			options.append(w)
 	if options.size() < OPTION_COUNT:
-		var bank := WordBank.get_all_words()
+		var bank := WordBank.get_all_core_words()
 		var guard := 0
 		while options.size() < OPTION_COUNT and guard < 500:
 			guard += 1
 			var w := bank[rng.randi() % bank.size()]
-			if w != answer and not options.has(w) and WordBank.has_real_meaning(w):
+			if w != answer and not options.has(w):
 				options.append(w)
 	options.shuffle()
 	return options

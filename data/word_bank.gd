@@ -847,6 +847,37 @@ static func has_real_meaning(word: String) -> bool:
 	return _lookup_full(w) != "" or MEANINGS.has(w) or ANIMAL_MEANINGS.has(w) or PROFESSION_MEANINGS.has(w)
 
 
+const _CORE := preload("res://data/core_words.gd")
+
+
+## Seviyenin çekirdek (sık kullanılan) kelimeleri; hedefler bunlardan seçilir.
+## Sözlükte olmayan bir çekirdek kelime varsa atlanır; liste boş kalırsa
+## havuzun ilk 24 kelimesine düşülür.
+static func get_core_words(level: int) -> Array[String]:
+	_ensure_built()
+	var out: Array[String] = []
+	var src: Array = _CORE.CORE.get(level, [])
+	for raw in src:
+		var w := _clean(str(raw))
+		if w != "" and _level_of.has(w) and not out.has(w):
+			out.append(w)
+	if out.is_empty():
+		var pool := get_level_words(level)
+		for i in range(mini(24, pool.size())):
+			out.append(pool[i])
+	return out
+
+
+## Tüm seviyelerin çekirdek kelimeleri (Günün Kelimeleri ve quiz çeldiricileri için).
+static func get_all_core_words() -> Array[String]:
+	var all: Array[String] = []
+	for level in range(1, LEVEL_COUNT + 1):
+		for w in get_core_words(level):
+			if not all.has(w):
+				all.append(w)
+	return all
+
+
 ## Kelimenin ait olduğu seviye (1 tabanlı); bilinmiyorsa 0.
 static func get_level_of(word: String) -> int:
 	_ensure_built()

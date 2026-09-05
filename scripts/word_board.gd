@@ -486,7 +486,7 @@ func _continue_after_reveal() -> void:
 
 func _load_level(level: int) -> void:
 	current_level = clampi(level, 1, WordBank.LEVEL_COUNT)
-	level_words = WordBank.get_level_words(current_level)
+	level_words = WordBank.get_core_words(current_level)
 	remaining_words = _pick_targets(_ordered_by_difficulty(level_words), WORDS_TO_CLEAR)
 	target_total = remaining_words.size()
 	title_label.text = "Seviye %d: %s" % [current_level, WordBank.get_level_title(current_level)]

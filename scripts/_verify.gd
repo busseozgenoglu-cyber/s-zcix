@@ -28,5 +28,18 @@ func _init() -> void:
 			print("anlam yok: ", w)
 	print("anlamsiz kelime sayisi: ", missing, " / ", Bank.get_total_unique_words())
 	print("ornek: CAT=", Bank.get_meaning("CAT"), " | ZOO=", Bank.get_meaning("ZOO"), " | seviye 7=", Bank.get_level_title(7))
+	var Core = load("res://data/core_words.gd")
+	for level in range(1, Bank.LEVEL_COUNT + 1):
+		var core: Array = Bank.get_core_words(level)
+		var src: Array = Core.CORE.get(level, [])
+		if core.size() != src.size():
+			ok = false
+			var missing_words := []
+			for w in src:
+				if not core.has(w):
+					missing_words.append(w)
+			print("HATA: seviye ", level, " cekirdek kelime sozlukte yok: ", missing_words)
+		else:
+			print("cekirdek L", level, " ok (", core.size(), "): ", " ".join(core.slice(0, 8)), " ...")
 	print("SONUC: ", "TAMAM" if ok and missing == 0 else "HATA")
 	quit()

@@ -183,10 +183,7 @@ func daily_result_today() -> Dictionary:
 func daily_words() -> Array[String]:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = hash(today_key())
-	var pool: Array[String] = []
-	for w in WordBank.get_all_words():
-		if WordBank.has_real_meaning(w):
-			pool.append(w)
+	var pool: Array[String] = WordBank.get_all_core_words()
 	var chosen: Array[String] = []
 	while chosen.size() < DAILY_WORD_COUNT and pool.size() > 0:
 		var idx := rng.randi() % pool.size()
