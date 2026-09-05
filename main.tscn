@@ -7,6 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://ckh8mr2qa4kpa" path="res://assets/images/img-69715444-5126-4ee3-bc65-b090abf1b32e-1787003493169-0_1787003493169_yipjbn76.png" id="5_dog"]
 [ext_resource type="Texture2D" uid="uid://uw4vn0lkn6ni" path="res://assets/images/img-69715444-5126-4ee3-bc65-b090abf1b32e-1787003493226-0_1787003493226_2bxuf32l.png" id="6_rabbit"]
 [ext_resource type="Script" uid="uid://b6kwadki8hog3" path="res://scripts/playful_backdrop.gd" id="7_playful"]
+[ext_resource type="AudioStream" uid="uid://bfw7geaqmrnjr" path="res://assets/audio/bg_music.wav" id="8_bgm"]
 
 [sub_resource type="StyleBoxFlat" id="S_reset"]
 bg_color = Color(0.153, 0.682, 0.376, 1)
@@ -147,24 +148,6 @@ corner_radius_top_right = 24
 corner_radius_bottom_right = 24
 corner_radius_bottom_left = 24
 
-[sub_resource type="StyleBoxFlat" id="S_paywall_panel"]
-content_margin_left = 28.0
-content_margin_top = 24.0
-content_margin_right = 28.0
-content_margin_bottom = 24.0
-bg_color = Color(0.16, 0.1, 0.34, 1)
-border_width_left = 8
-border_width_top = 8
-border_width_right = 8
-border_width_bottom = 8
-border_color = Color(1, 0.84, 0.2, 1)
-corner_radius_top_left = 32
-corner_radius_top_right = 32
-corner_radius_bottom_right = 32
-corner_radius_bottom_left = 32
-shadow_color = Color(0.1, 0.03, 0.2, 0.4)
-shadow_size = 14
-
 [node name="WordBlast" type="Control" unique_id=395357007]
 layout_mode = 3
 anchors_preset = 15
@@ -173,6 +156,12 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_board")
+
+[node name="BackgroundMusic" type="AudioStreamPlayer" parent="." unique_id=100200300]
+stream = ExtResource("8_bgm")
+volume_db = -9.0
+autoplay = true
+bus = &"Master"
 
 [node name="Background" type="ColorRect" parent="." unique_id=381828597]
 layout_mode = 1
@@ -257,7 +246,7 @@ offset_bottom = 52.0
 grow_horizontal = 2
 theme_override_colors/font_color = Color(0.957, 0.231, 0.412, 1)
 theme_override_font_sizes/font_size = 40
-text = "KELIME OYUNU"
+text = "Wordi"
 horizontal_alignment = 1
 
 [node name="WordLabel" type="Label" parent="." unique_id=1085874978]
@@ -282,7 +271,7 @@ offset_right = 300.0
 offset_bottom = 114.0
 theme_override_colors/font_color = Color(0.42, 0.27, 0.61, 1)
 theme_override_font_sizes/font_size = 22
-text = "SEVIYE 1  0/100"
+text = "SEVİYE 1  0/15"
 
 [node name="ScoreLabel" type="Label" parent="." unique_id=1487643765]
 layout_mode = 1
@@ -321,7 +310,7 @@ theme_override_font_sizes/font_size = 20
 theme_override_styles/normal = SubResource("S_reset")
 theme_override_styles/pressed = SubResource("S_reset_pressed")
 theme_override_styles/hover = SubResource("S_reset_hover")
-text = "YENIDEN BASLA"
+text = "MENÜ"
 
 [node name="HintPanel" type="PanelContainer" parent="." unique_id=2013407043]
 layout_mode = 1
@@ -340,7 +329,7 @@ theme_override_styles/panel = SubResource("S_hint")
 layout_mode = 2
 theme_override_colors/font_color = Color(0.42, 0.27, 0.61, 1)
 theme_override_font_sizes/font_size = 18
-text = "IPUCU: Salyangoz = S ile baslayan kelime"
+text = "İPUCU"
 autowrap_mode = 2
 
 [node name="Center" type="CenterContainer" parent="." unique_id=867860719]
@@ -754,7 +743,7 @@ theme_override_font_sizes/font_size = 24
 theme_override_styles/normal = SubResource("S_reset")
 theme_override_styles/pressed = SubResource("S_reset_pressed")
 theme_override_styles/hover = SubResource("S_reset_hover")
-text = "DINLE"
+text = "DİNLE"
 
 [node name="IllustrationCard" type="PanelContainer" parent="RevealOverlay/RevealCenter/RevealPanel/VBox" unique_id=920431116]
 layout_mode = 2
@@ -771,88 +760,5 @@ script = ExtResource("2_ill")
 layout_mode = 2
 theme_override_colors/font_color = Color(0.42, 0.27, 0.61, 1)
 theme_override_font_sizes/font_size = 22
-text = "Devam etmek icin dokun"
+text = "Devam etmek için dokun"
 horizontal_alignment = 1
-
-[node name="PaywallOverlay" type="Control" parent="." unique_id=2053071454]
-visible = false
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="Dim" type="ColorRect" parent="PaywallOverlay" unique_id=1972278358]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-color = Color(0.12, 0.05, 0.22, 0.72)
-
-[node name="PaywallCenter" type="CenterContainer" parent="PaywallOverlay" unique_id=388877903]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-
-[node name="PaywallPanel" type="PanelContainer" parent="PaywallOverlay/PaywallCenter" unique_id=2069776538]
-custom_minimum_size = Vector2(360, 0)
-layout_mode = 2
-mouse_filter = 2
-theme_override_styles/panel = SubResource("S_paywall_panel")
-
-[node name="VBox" type="VBoxContainer" parent="PaywallOverlay/PaywallCenter/PaywallPanel" unique_id=41192734]
-layout_mode = 2
-mouse_filter = 2
-theme_override_constants/separation = 14
-
-[node name="PaywallTitleLabel" type="Label" parent="PaywallOverlay/PaywallCenter/PaywallPanel/VBox" unique_id=86010253]
-layout_mode = 2
-theme_override_colors/font_color = Color(1, 0.84, 0.2, 1)
-theme_override_font_sizes/font_size = 34
-text = "4. SEVIYE KILITLI"
-horizontal_alignment = 1
-
-[node name="PaywallPriceLabel" type="Label" parent="PaywallOverlay/PaywallCenter/PaywallPanel/VBox" unique_id=878728837]
-layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 26
-text = "Prototip fiyat: 19,99 TL"
-horizontal_alignment = 1
-
-[node name="PaywallMessageLabel" type="Label" parent="PaywallOverlay/PaywallCenter/PaywallPanel/VBox" unique_id=703580313]
-visible = false
-layout_mode = 2
-theme_override_colors/font_color = Color(0.42, 1, 0.62, 1)
-theme_override_font_sizes/font_size = 20
-text = "Demo: Gercek odeme yok"
-horizontal_alignment = 1
-
-[node name="BuyButton" type="Button" parent="PaywallOverlay/PaywallCenter/PaywallPanel/VBox" unique_id=480654732]
-layout_mode = 2
-focus_mode = 0
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
-theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 24
-theme_override_styles/normal = SubResource("S_reset")
-theme_override_styles/pressed = SubResource("S_reset_pressed")
-theme_override_styles/hover = SubResource("S_reset_hover")
-text = "SATIN AL"
-
-[node name="PaywallCloseButton" type="Button" parent="PaywallOverlay/PaywallCenter/PaywallPanel/VBox" unique_id=1989705623]
-layout_mode = 2
-focus_mode = 0
-theme_override_colors/font_color = Color(0.42, 0.27, 0.61, 1)
-theme_override_colors/font_pressed_color = Color(0.42, 0.27, 0.61, 1)
-theme_override_colors/font_hover_color = Color(0.42, 0.27, 0.61, 1)
-theme_override_font_sizes/font_size = 20
-theme_override_styles/normal = SubResource("S_hint")
-text = "GERI DON"

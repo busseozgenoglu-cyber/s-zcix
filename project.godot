@@ -10,19 +10,36 @@ config_version=5
 
 [application]
 
-config/name="poker"
-run/main_scene="res://main.tscn"
+config/name="Wordi - İngilizce Kelime Oyunu"
+run/main_scene="res://menu.tscn"
 config/features=PackedStringArray("4.6", "Mobile")
-config/icon="res://icon.svg"
+config/icon="res://icon.png"
+
+[autoload]
+
+Progress="*res://scripts/progress.gd"
 
 [display]
 
+window/size/viewport_width=540
+window/size/viewport_height=1170
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
+window/handheld/orientation=1
+
+[audio]
+
+general/ios/session_category=3
 
 [dotnet]
 
 project/assembly_name="poker"
+
+[importer_defaults]
+
+wav={
+"edit/loop_mode": 1
+}
 
 [input]
 
@@ -40,3 +57,4 @@ reset={
 
 rendering_device/driver.windows="d3d12"
 renderer/rendering_method="mobile"
+textures/vram_compression/import_etc2_astc=true

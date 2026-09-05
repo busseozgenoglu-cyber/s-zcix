@@ -44,6 +44,30 @@ func _resolve_kind(word: String) -> String:
 			return "apple"
 		"RED", "BLUE", "GREEN":
 			return "color"
+		"DUCK":
+			return "duck"
+		"BIRD", "OWL", "HEN", "CROW", "SWAN", "DOVE":
+			return "bird"
+		"EGG":
+			return "egg"
+		"MILK":
+			return "milk"
+		"CAKE":
+			return "cake"
+		"CAR":
+			return "car"
+		"FLOWER":
+			return "flower"
+		"CLOUD":
+			return "cloud"
+		"RAIN":
+			return "rain"
+		"HAT", "CAP":
+			return "hat"
+		"KEY":
+			return "key"
+		"CUP", "MUG":
+			return "cup"
 		_:
 			return WordBank.get_illustration_kind(word)
 
@@ -95,6 +119,60 @@ func _draw() -> void:
 			_draw_animal()
 		"profession":
 			_draw_profession()
+		"body":
+			_draw_body()
+		"food":
+			_draw_food()
+		"furniture":
+			_draw_furniture()
+		"toy":
+			_draw_toy()
+		"school":
+			_draw_school()
+		"nature":
+			_draw_nature()
+		"action":
+			_draw_action()
+		"clothes":
+			_draw_clothes()
+		"place":
+			_draw_place()
+		"vehicle":
+			_draw_car()
+		"person":
+			_draw_person()
+		"feeling":
+			_draw_feeling()
+		"time":
+			_draw_time()
+		"adjective":
+			_draw_adjective()
+		"object":
+			_draw_object()
+		"duck":
+			_draw_duck()
+		"bird":
+			_draw_bird()
+		"egg":
+			_draw_egg()
+		"milk":
+			_draw_milk()
+		"cake":
+			_draw_cake()
+		"car":
+			_draw_car()
+		"flower":
+			_draw_flower()
+		"cloud":
+			_draw_cloud()
+		"rain":
+			_draw_rain()
+		"hat":
+			_draw_hat()
+		"key":
+			_draw_key()
+		"cup":
+			_draw_cup()
 		_:
 			_draw_badge(word_key)
 
@@ -332,6 +410,309 @@ func _draw_profession() -> void:
 		c + Vector2(head * 1.1, head * 1.4),
 		c + Vector2(head * 0.7, head * 0.6),
 		c + Vector2(-head * 0.7, head * 0.6),
+	]), Color("#2a9d4e"))
+
+
+func _draw_duck() -> void:
+	var c := _center()
+	var u := _unit()
+	draw_colored_polygon(_ellipse_points(c + Vector2(0.0, u * 0.06), u * 0.24, u * 0.18), Color("#ffd23f"))
+	draw_circle(c + Vector2(-u * 0.2, -u * 0.16), u * 0.13, Color("#ffd23f"))
+	draw_colored_polygon(PackedVector2Array([
+		c + Vector2(-u * 0.32, -u * 0.16),
+		c + Vector2(-u * 0.14, -u * 0.2),
+		c + Vector2(-u * 0.16, -u * 0.1),
+	]), Color("#f4a261"))
+	draw_circle(c + Vector2(-u * 0.24, -u * 0.2), u * 0.025, Color("#264653"))
+	draw_colored_polygon(_ellipse_points(c + Vector2(u * 0.04, u * 0.02), u * 0.1, u * 0.06), Color("#f9e076"))
+
+
+func _draw_bird() -> void:
+	var c := _center()
+	var u := _unit()
+	draw_colored_polygon(_ellipse_points(c, u * 0.22, u * 0.17), Color("#3a86ff"))
+	draw_circle(c + Vector2(-u * 0.19, -u * 0.12), u * 0.1, Color("#3a86ff"))
+	draw_colored_polygon(PackedVector2Array([
+		c + Vector2(-u * 0.29, -u * 0.12),
+		c + Vector2(-u * 0.15, -u * 0.16),
+		c + Vector2(-u * 0.15, -u * 0.06),
+	]), Color("#f4a261"))
+	draw_circle(c + Vector2(-u * 0.22, -u * 0.16), u * 0.02, Color("#264653"))
+	draw_colored_polygon(_ellipse_points(c + Vector2(u * 0.06, u * 0.02), u * 0.11, u * 0.06), Color("#1f6fe0"))
+	draw_line(c + Vector2(-u * 0.02, u * 0.16), c + Vector2(-u * 0.05, u * 0.24), Color("#e76f51"), u * 0.015)
+	draw_line(c + Vector2(u * 0.04, u * 0.16), c + Vector2(u * 0.06, u * 0.24), Color("#e76f51"), u * 0.015)
+
+
+func _draw_egg() -> void:
+	var c := _center()
+	var u := _unit()
+	draw_colored_polygon(PackedVector2Array([
+		c + Vector2(0.0, -u * 0.3), c + Vector2(u * 0.14, -u * 0.2), c + Vector2(u * 0.2, -u * 0.02),
+		c + Vector2(u * 0.16, u * 0.18), c + Vector2(0.0, u * 0.28), c + Vector2(-u * 0.16, u * 0.18),
+		c + Vector2(-u * 0.2, -u * 0.02), c + Vector2(-u * 0.14, -u * 0.2),
+	]), Color("#fff3d6"))
+	draw_circle(c + Vector2(-u * 0.06, -u * 0.08), u * 0.04, Color("#ffffff"))
+
+
+func _draw_milk() -> void:
+	var c := _center()
+	var u := _unit()
+	draw_colored_polygon(PackedVector2Array([
+		c + Vector2(-u * 0.16, -u * 0.28), c + Vector2(u * 0.16, -u * 0.28),
+		c + Vector2(u * 0.12, u * 0.28), c + Vector2(-u * 0.12, u * 0.28),
+	]), Color("#eaf2ff"))
+	draw_colored_polygon(PackedVector2Array([
+		c + Vector2(-u * 0.15, -u * 0.04), c + Vector2(u * 0.15, -u * 0.04),
+		c + Vector2(u * 0.12, u * 0.28), c + Vector2(-u * 0.12, u * 0.28),
+	]), Color("#ffffff"))
+	draw_rect(Rect2(c.x - u * 0.17, c.y - u * 0.33, u * 0.34, u * 0.06), Color("#3a86ff"))
+
+
+func _draw_cake() -> void:
+	var c := _center()
+	var u := _unit()
+	draw_rect(Rect2(c.x - u * 0.26, c.y + u * 0.02, u * 0.52, u * 0.24), Color("#e76f51"))
+	draw_rect(Rect2(c.x - u * 0.2, c.y - u * 0.12, u * 0.4, u * 0.16), Color("#f4a261"))
+	draw_colored_polygon(_ellipse_points(c + Vector2(0.0, -u * 0.12), u * 0.2, u * 0.05), Color("#ffffff"))
+	draw_rect(Rect2(c.x - u * 0.02, c.y - u * 0.28, u * 0.04, u * 0.18), Color("#f9e076"))
+	draw_colored_polygon(_ellipse_points(c + Vector2(0.0, -u * 0.32), u * 0.03, u * 0.05), Color("#ffd23f"))
+
+
+func _draw_car() -> void:
+	var c := _center()
+	var u := _unit()
+	draw_colored_polygon(PackedVector2Array([
+		c + Vector2(-u * 0.34, u * 0.1), c + Vector2(-u * 0.2, -u * 0.1), c + Vector2(u * 0.14, -u * 0.1),
+		c + Vector2(u * 0.34, u * 0.1),
+	]), Color("#e63946"))
+	draw_rect(Rect2(c.x - u * 0.34, c.y + u * 0.06, u * 0.68, u * 0.14), Color("#e63946"))
+	draw_colored_polygon(PackedVector2Array([
+		c + Vector2(-u * 0.15, -u * 0.09), c + Vector2(-u * 0.04, -u * 0.09),
+		c + Vector2(-u * 0.04, u * 0.05), c + Vector2(-u * 0.19, u * 0.05),
+	]), Color("#cdeaff"))
+	draw_colored_polygon(PackedVector2Array([
+		c + Vector2(u * 0.01, -u * 0.09), c + Vector2(u * 0.11, -u * 0.09),
+		c + Vector2(u * 0.15, u * 0.05), c + Vector2(u * 0.01, u * 0.05),
+	]), Color("#cdeaff"))
+	draw_circle(c + Vector2(-u * 0.2, u * 0.22), u * 0.08, Color("#264653"))
+	draw_circle(c + Vector2(u * 0.2, u * 0.22), u * 0.08, Color("#264653"))
+	draw_circle(c + Vector2(-u * 0.2, u * 0.22), u * 0.03, Color("#c8d8f0"))
+	draw_circle(c + Vector2(u * 0.2, u * 0.22), u * 0.03, Color("#c8d8f0"))
+
+
+func _draw_flower() -> void:
+	var c := _center()
+	var u := _unit()
+	draw_line(c + Vector2(0.0, u * 0.1), c + Vector2(0.0, u * 0.36), Color("#2a9d4e"), u * 0.025)
+	var petal := u * 0.13
+	for i in range(5):
+		var ang := TAU * float(i) / 5.0
+		draw_circle(c + Vector2(cos(ang), sin(ang)) * petal * 1.1, petal, Color("#ff8fa3"))
+	draw_circle(c, petal * 0.7, Color("#ffd23f"))
+
+
+func _draw_cloud() -> void:
+	var c := _center()
+	var u := _unit()
+	draw_circle(c + Vector2(-u * 0.14, u * 0.04), u * 0.16, Color("#f2f6ff"))
+	draw_circle(c + Vector2(u * 0.12, u * 0.02), u * 0.19, Color("#f2f6ff"))
+	draw_circle(c + Vector2(u * 0.32, u * 0.08), u * 0.13, Color("#f2f6ff"))
+	draw_rect(Rect2(c.x - u * 0.24, c.y + u * 0.02, u * 0.56, u * 0.14), Color("#f2f6ff"))
+
+
+func _draw_rain() -> void:
+	var c := _center()
+	var u := _unit()
+	draw_circle(c + Vector2(-u * 0.12, -u * 0.14), u * 0.14, Color("#c8d8f0"))
+	draw_circle(c + Vector2(u * 0.1, -u * 0.16), u * 0.17, Color("#c8d8f0"))
+	draw_rect(Rect2(c.x - u * 0.2, c.y - u * 0.14, u * 0.46, u * 0.12), Color("#c8d8f0"))
+	for dx in [-u * 0.16, 0.0, u * 0.16]:
+		draw_line(c + Vector2(dx, u * 0.06), c + Vector2(dx - u * 0.03, u * 0.24), Color("#3a86ff"), u * 0.02)
+
+
+func _draw_hat() -> void:
+	var c := _center()
+	var u := _unit()
+	draw_colored_polygon(_ellipse_points(c + Vector2(0.0, u * 0.14), u * 0.32, u * 0.08), Color("#e76f51"))
+	draw_colored_polygon(PackedVector2Array([
+		c + Vector2(-u * 0.16, u * 0.12), c + Vector2(u * 0.16, u * 0.12),
+		c + Vector2(u * 0.12, -u * 0.22), c + Vector2(-u * 0.12, -u * 0.22),
+	]), Color("#f4a261"))
+	draw_rect(Rect2(c.x - u * 0.16, c.y + u * 0.02, u * 0.32, u * 0.06), Color("#264653"))
+
+
+func _draw_key() -> void:
+	var c := _center()
+	var u := _unit()
+	draw_circle(c + Vector2(-u * 0.18, -u * 0.14), u * 0.14, Color("#ffd23f"))
+	draw_circle(c + Vector2(-u * 0.18, -u * 0.14), u * 0.06, Color("#7f6bd6"))
+	draw_line(c + Vector2(-u * 0.08, -u * 0.04), c + Vector2(u * 0.26, u * 0.3), Color("#ffd23f"), u * 0.05)
+	draw_line(c + Vector2(u * 0.14, u * 0.18), c + Vector2(u * 0.14, u * 0.28), Color("#ffd23f"), u * 0.04)
+	draw_line(c + Vector2(u * 0.22, u * 0.26), c + Vector2(u * 0.22, u * 0.34), Color("#ffd23f"), u * 0.04)
+
+
+func _draw_cup() -> void:
+	var c := _center()
+	var u := _unit()
+	draw_rect(Rect2(c.x - u * 0.18, c.y - u * 0.2, u * 0.36, u * 0.32), Color("#ff8c42"))
+	draw_rect(Rect2(c.x - u * 0.18, c.y - u * 0.2, u * 0.36, u * 0.07), Color("#ffffff"))
+	draw_arc(c + Vector2(u * 0.24, -u * 0.02), u * 0.11, -PI * 0.5, PI * 0.5, 12, Color("#ff8c42"), u * 0.03)
+
+
+func _draw_body() -> void:
+	var c := _center()
+	var u := _unit()
+	draw_circle(c + Vector2(0.0, -u * 0.24), u * 0.11, Color("#f9c6a4"))
+	draw_colored_polygon(PackedVector2Array([
+		c + Vector2(-u * 0.16, u * 0.3), c + Vector2(u * 0.16, u * 0.3),
+		c + Vector2(u * 0.12, -u * 0.06), c + Vector2(-u * 0.12, -u * 0.06),
+	]), Color("#3a86ff"))
+	draw_circle(c + Vector2(-u * 0.03, -u * 0.02), u * 0.045, Color("#ffd23f"))
+	draw_circle(c + Vector2(u * 0.06, u * 0.06), u * 0.045, Color("#ffd23f"))
+
+
+func _draw_food() -> void:
+	var c := _center()
+	var u := _unit()
+	draw_colored_polygon(_ellipse_points(c + Vector2(0.0, u * 0.14), u * 0.3, u * 0.14), Color("#f4a261"))
+	draw_colored_polygon(_ellipse_points(c + Vector2(0.0, u * 0.1), u * 0.26, u * 0.11), Color("#ffe0b2"))
+	draw_circle(c + Vector2(-u * 0.08, -u * 0.02), u * 0.09, Color("#2a9d4e"))
+	draw_circle(c + Vector2(u * 0.08, -u * 0.03), u * 0.08, Color("#e63946"))
+	draw_circle(c + Vector2(0.0, -u * 0.1), u * 0.07, Color("#ffd23f"))
+
+
+func _draw_furniture() -> void:
+	var c := _center()
+	var u := _unit()
+	draw_rect(Rect2(c.x - u * 0.2, c.y - u * 0.06, u * 0.4, u * 0.08), Color("#8a5a44"))
+	draw_rect(Rect2(c.x - u * 0.2, c.y - u * 0.32, u * 0.07, u * 0.26), Color("#a47148"))
+	draw_rect(Rect2(c.x + u * 0.13, c.y - u * 0.32, u * 0.07, u * 0.26), Color("#a47148"))
+	for dx in [-u * 0.16, u * 0.16]:
+		draw_rect(Rect2(c.x + dx - u * 0.02, c.y + u * 0.02, u * 0.04, u * 0.26), Color("#5c3a2e"))
+
+
+func _draw_toy() -> void:
+	var c := _center()
+	var u := _unit()
+	draw_rect(Rect2(c.x - u * 0.26, c.y + u * 0.02, u * 0.2, u * 0.2), Color("#e63946"))
+	draw_rect(Rect2(c.x + u * 0.02, c.y + u * 0.02, u * 0.2, u * 0.2), Color("#3a86ff"))
+	draw_rect(Rect2(c.x - u * 0.12, c.y - u * 0.2, u * 0.2, u * 0.2), Color("#ffd23f"))
+
+
+func _draw_school() -> void:
+	var c := _center()
+	var u := _unit()
+	draw_colored_polygon(PackedVector2Array([
+		c + Vector2(-u * 0.28, u * 0.24), c + Vector2(-u * 0.08, u * 0.28), c + Vector2(u * 0.26, -u * 0.22),
+		c + Vector2(u * 0.16, -u * 0.3), c + Vector2(u * 0.02, -u * 0.14),
+	]), Color("#ffd23f"))
+	draw_colored_polygon(PackedVector2Array([
+		c + Vector2(u * 0.16, -u * 0.3), c + Vector2(u * 0.26, -u * 0.22), c + Vector2(u * 0.22, -u * 0.34),
+	]), Color("#264653"))
+	draw_colored_polygon(PackedVector2Array([
+		c + Vector2(-u * 0.28, u * 0.24), c + Vector2(-u * 0.08, u * 0.28), c + Vector2(-u * 0.16, u * 0.32),
+	]), Color("#e76f51"))
+
+
+func _draw_nature() -> void:
+	var c := _center()
+	var u := _unit()
+	draw_colored_polygon(PackedVector2Array([
+		c + Vector2(0.0, -u * 0.3), c + Vector2(u * 0.22, -u * 0.04), c + Vector2(0.0, u * 0.3),
+		c + Vector2(-u * 0.22, -u * 0.04),
+	]), Color("#2a9d4e"))
+	draw_line(c + Vector2(0.0, -u * 0.28), c + Vector2(0.0, u * 0.28), Color("#1f6d3a"), u * 0.018)
+
+
+func _draw_action() -> void:
+	var c := _center()
+	var u := _unit()
+	var lw := u * 0.035
+	draw_circle(c + Vector2(u * 0.06, -u * 0.28), u * 0.08, Color("#f9c6a4"))
+	draw_line(c + Vector2(u * 0.02, -u * 0.2), c + Vector2(-u * 0.06, u * 0.04), Color("#3a86ff"), lw)
+	draw_line(c + Vector2(-u * 0.06, u * 0.04), c + Vector2(u * 0.1, -u * 0.02), Color("#3a86ff"), lw)
+	draw_line(c + Vector2(-u * 0.06, u * 0.04), c + Vector2(-u * 0.24, u * 0.32), Color("#264653"), lw)
+	draw_line(c + Vector2(u * 0.1, -u * 0.02), c + Vector2(u * 0.3, u * 0.14), Color("#264653"), lw)
+	draw_line(c + Vector2(u * 0.02, -u * 0.2), c + Vector2(-u * 0.2, -u * 0.28), Color("#f4a261"), lw)
+	draw_line(c + Vector2(u * 0.02, -u * 0.2), c + Vector2(u * 0.26, -u * 0.3), Color("#f4a261"), lw)
+
+
+func _draw_clothes() -> void:
+	var c := _center()
+	var u := _unit()
+	draw_colored_polygon(PackedVector2Array([
+		c + Vector2(-u * 0.24, -u * 0.18), c + Vector2(-u * 0.1, -u * 0.28), c + Vector2(0.0, -u * 0.18),
+		c + Vector2(u * 0.1, -u * 0.28), c + Vector2(u * 0.24, -u * 0.18), c + Vector2(u * 0.16, -u * 0.02),
+		c + Vector2(u * 0.14, u * 0.28), c + Vector2(-u * 0.14, u * 0.28), c + Vector2(-u * 0.16, -u * 0.02),
+	]), Color("#3a86ff"))
+	draw_colored_polygon(_ellipse_points(c + Vector2(0.0, -u * 0.18), u * 0.06, u * 0.04), Color("#eaf2ff"))
+
+
+func _draw_place() -> void:
+	var c := _center()
+	var u := _unit()
+	draw_rect(Rect2(c.x - u * 0.22, c.y - u * 0.3, u * 0.44, u * 0.58), Color("#e76f51"))
+	for row in range(2):
+		for col in range(2):
+			draw_rect(Rect2(c.x - u * 0.15 + col * u * 0.17, c.y - u * 0.2 + row * u * 0.2, u * 0.1, u * 0.1), Color("#fff3d6"))
+	draw_rect(Rect2(c.x - u * 0.05, c.y + u * 0.12, u * 0.1, u * 0.16), Color("#8a5a44"))
+
+
+func _draw_person() -> void:
+	var c := _center()
+	var u := _unit()
+	draw_circle(c + Vector2(0.0, -u * 0.2), u * 0.14, Color("#f9c6a4"))
+	draw_colored_polygon(PackedVector2Array([
+		c + Vector2(-u * 0.2, u * 0.3), c + Vector2(u * 0.2, u * 0.3),
+		c + Vector2(u * 0.14, -u * 0.02), c + Vector2(-u * 0.14, -u * 0.02),
+	]), Color("#2a9d4e"))
+	draw_circle(c + Vector2(-u * 0.05, -u * 0.22), u * 0.02, Color("#264653"))
+	draw_circle(c + Vector2(u * 0.05, -u * 0.22), u * 0.02, Color("#264653"))
+
+
+func _draw_feeling() -> void:
+	var c := _center()
+	var u := _unit()
+	draw_circle(c, u * 0.28, Color("#ffd23f"))
+	draw_circle(c + Vector2(-u * 0.09, -u * 0.06), u * 0.03, Color("#264653"))
+	draw_circle(c + Vector2(u * 0.09, -u * 0.06), u * 0.03, Color("#264653"))
+	draw_arc(c + Vector2(0.0, u * 0.02), u * 0.14, 0.25, PI - 0.25, 12, Color("#264653"), u * 0.02)
+
+
+func _draw_time() -> void:
+	var c := _center()
+	var u := _unit()
+	draw_circle(c, u * 0.28, Color("#eaf2ff"))
+	draw_circle(c, u * 0.28, Color("#3a86ff"), false, u * 0.02)
+	for i in range(12):
+		var ang := TAU * float(i) / 12.0
+		var p1 := c + Vector2(cos(ang), sin(ang)) * u * 0.24
+		var p2 := c + Vector2(cos(ang), sin(ang)) * u * 0.27
+		draw_line(p1, p2, Color("#264653"), u * 0.012)
+	draw_line(c, c + Vector2(0.0, -u * 0.16), Color("#264653"), u * 0.02)
+	draw_line(c, c + Vector2(u * 0.13, u * 0.06), Color("#264653"), u * 0.018)
+	draw_circle(c, u * 0.02, Color("#e63946"))
+
+
+func _draw_adjective() -> void:
+	var c := _center()
+	var u := _unit()
+	draw_colored_polygon(PackedVector2Array([
+		c + Vector2(-u * 0.24, -u * 0.12), c + Vector2(u * 0.06, -u * 0.24), c + Vector2(u * 0.28, -u * 0.02),
+		c + Vector2(-u * 0.02, u * 0.24), c + Vector2(-u * 0.28, u * 0.16),
+	]), Color("#7f6bd6"))
+	draw_circle(c + Vector2(-u * 0.12, -u * 0.08), u * 0.045, Color("#ffffff"))
+
+
+func _draw_object() -> void:
+	var c := _center()
+	var u := _unit()
+	draw_rect(Rect2(c.x - u * 0.24, c.y - u * 0.16, u * 0.48, u * 0.4), Color("#ff8c42"))
+	draw_rect(Rect2(c.x - u * 0.24, c.y - u * 0.16, u * 0.48, u * 0.1), Color("#ffb787"))
+	draw_rect(Rect2(c.x - u * 0.04, c.y - u * 0.16, u * 0.08, u * 0.4), Color("#2a9d4e"))
+	draw_colored_polygon(PackedVector2Array([
+		c + Vector2(-u * 0.1, -u * 0.16), c + Vector2(u * 0.1, -u * 0.16),
+		c + Vector2(u * 0.14, -u * 0.3), c + Vector2(-u * 0.14, -u * 0.3),
 	]), Color("#2a9d4e"))
 
 

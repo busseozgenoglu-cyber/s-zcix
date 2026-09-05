@@ -1,26 +1,20 @@
 @tool
 extends Control
-## Word Blast prototype board.
-## Drag across adjacent letters to spell a word. Valid words clear their
-## tiles, the grid cascades, and new letters fall in from the top.
+## Wordi oyun tahtası.
+## Harfleri düz bir çizgide sürükleyerek İngilizce kelimeyi bul; doğru kelimede
+## resim + Türkçe anlam + telaffuz gösterilir ve kelime Kelime Defterine eklenir.
+## İki mod: SEVİYE (temalı 15 hedef kelime) ve GÜNÜN KELİMELERİ (süreli 8 kelime).
 
 const GRID_SIZE := 5
 const MIN_WORD_LENGTH := 3
+## Bir seviyeyi tamamlamak için bulunması gereken hedef kelime sayısı.
+const WORDS_TO_CLEAR := 15
 
-## Vocabulary and Turkish meanings load from the dedicated bank so the board
-## stays small while the game keeps a large rotating word pool.
 const WordBank := preload("res://data/word_bank.gd")
+const UIKit := preload("res://scripts/ui_kit.gd")
 
-## Fill letters are biased toward simple vocabulary so new letters can keep
-## forming familiar child-friendly words.
 const FILL_POOL := "AAAABBBBCCCCDDDDEEEEEEEFFGGGGHHHIIIIJJKKLLLMMMNNNNNOOOOOPPQRRRRSSSSTTTTUUUVWWXYYZ"
-
-
-
-
-
-## How long the meaning reveal stays up before returning to the board.
-const REVEAL_SECONDS := 2.0
+const REVEAL_SECONDS := 2.2
 
 var letters: Array[String] = []
 var dictionary: Dictionary = {}
@@ -30,32 +24,34 @@ var dragging := false
 var invalid_flash := 0.0
 var score := 0
 var combo := 0
+var mistakes := 0
 var revealing := false
+var finished := false
 var reveal_tween: Tween
 var pulse_tween: Tween
 
-## Words not yet found in the active level. When this empties, the board
-## advances to the next free level or shows the prototype paywall after level 3.
 var remaining_words: Array[String] = []
 var current_hint_word := ""
-var used_count := 0
-## Current level number (1-based). Levels 1-3 are free; level 4+ is locked.
 var current_level := 1
-## Active level target pool used to rebuild remaining_words.
 var level_words: Array[String] = []
-## True while the prototype paywall overlay is visible.
-var paywall_visible := false
-## Seeded generator for deterministic board placement.
+var target_total := WORDS_TO_CLEAR
 var _board_rng := RandomNumberGenerator.new()
+
+## Günün kelimeleri modu
+var daily_mode := false
+var time_left := 0.0
+var timer_label: Label
 
 var tile_buttons: Array[Button] = []
 var base_styles: Array[StyleBox] = []
 var selected_style: StyleBox
 var invalid_style: StyleBox
+var result_overlay: Control
 
 @onready var score_label: Label = $ScoreLabel
 @onready var combo_label: Label = $ComboLabel
 @onready var word_label: Label = $WordLabel
+@onready var title_label: Label = $Title
 @onready var feedback_label: Label = $FeedbackLabel
 @onready var reveal_overlay: Control = $RevealOverlay
 @onready var reveal_panel: PanelContainer = $RevealOverlay/RevealCenter/RevealPanel
@@ -67,24 +63,21 @@ var invalid_style: StyleBox
 @onready var listen_button: Button = $RevealOverlay/RevealCenter/RevealPanel/VBox/ListenButton
 @onready var pronunciation_label: Label = $RevealOverlay/RevealCenter/RevealPanel/VBox/PronunciationLabel
 @onready var level_label: Label = $LevelLabel
-@onready var paywall_overlay: Control = $PaywallOverlay
-@onready var paywall_title_label: Label = $PaywallOverlay/PaywallCenter/PaywallPanel/VBox/PaywallTitleLabel
-@onready var paywall_price_label: Label = $PaywallOverlay/PaywallCenter/PaywallPanel/VBox/PaywallPriceLabel
-@onready var paywall_message_label: Label = $PaywallOverlay/PaywallCenter/PaywallPanel/VBox/PaywallMessageLabel
-@onready var buy_button: Button = $PaywallOverlay/PaywallCenter/PaywallPanel/VBox/BuyButton
-@onready var paywall_close_button: Button = $PaywallOverlay/PaywallCenter/PaywallPanel/VBox/PaywallCloseButton
+@onready var menu_button: Button = $ResetButton
+@onready var music_player: AudioStreamPlayer = $BackgroundMusic
+
+
+func _has_progress() -> bool:
+	return not Engine.is_editor_hint() and has_node("/root/Progress")
 
 
 func _ready() -> void:
 	for word in WordBank.get_all_words():
 		dictionary[word] = true
-	$ResetButton.pressed.connect(_on_reset_pressed)
+	menu_button.pressed.connect(_on_menu_pressed)
 	listen_button.pressed.connect(_on_listen_pressed)
 	reveal_overlay.gui_input.connect(_on_reveal_overlay_input)
 	reveal_overlay.hide()
-	paywall_overlay.hide()
-	buy_button.pressed.connect(_on_buy_pressed)
-	paywall_close_button.pressed.connect(_on_paywall_close_pressed)
 	resized.connect(_on_resized)
 	for i in range(GRID_SIZE * GRID_SIZE):
 		var button := get_node_or_null("Center/BoardBackdrop/Board/Tile%d" % i)
@@ -93,8 +86,17 @@ func _ready() -> void:
 			base_styles.append(button.get_theme_stylebox("normal"))
 	selected_style = _make_tile_style(Color("#ffd23f"), Color("#ffffff"))
 	invalid_style = _make_tile_style(Color("#e63946"), Color("#ffffff"))
+	_layout_hud()
 	_on_resized()
-	_board_rng.seed = 20240517
+	if _has_progress():
+		daily_mode = Progress.mode == Progress.Mode.DAILY
+		current_level = Progress.current_level
+		music_player.playing = Progress.music_on
+		if not Progress.music_on:
+			music_player.stop()
+	_board_rng.seed = hash(Progress.today_key()) if daily_mode else int(Time.get_unix_time_from_system())
+	if daily_mode:
+		_build_timer_label()
 	reset_board()
 
 
@@ -104,10 +106,15 @@ func _process(delta: float) -> void:
 		if invalid_flash == 0.0:
 			invalid_tiles.clear()
 		_refresh_tiles()
+	if daily_mode and not finished and not Engine.is_editor_hint():
+		time_left = maxf(0.0, time_left - delta)
+		_update_timer_label()
+		if time_left <= 0.0:
+			_finish_daily()
 
 
 func _gui_input(event: InputEvent) -> void:
-	if revealing or paywall_visible:
+	if revealing or finished:
 		return
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
 		if event.pressed:
@@ -118,12 +125,40 @@ func _gui_input(event: InputEvent) -> void:
 		_update_drag(event.position)
 
 
+## HUD yerleşimi (540 px mantıksal genişlik için): 1. satır puan + menü,
+## 2. satır seviye başlığı, 3. satır ilerleme (sol) ve kombo (sağ); tahta 190 px'den başlar.
+func _layout_hud() -> void:
+	title_label.offset_top = 56
+	title_label.offset_bottom = 100
+	title_label.add_theme_font_size_override("font_size", 30)
+	word_label.offset_top = 150
+	word_label.offset_bottom = 184
+	level_label.offset_top = 104
+	level_label.offset_bottom = 136
+	combo_label.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+	combo_label.offset_left = -300
+	combo_label.offset_right = -24
+	combo_label.offset_top = 104
+	combo_label.offset_bottom = 136
+	combo_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	combo_label.add_theme_font_size_override("font_size", 22)
+	$Center.offset_top = 190
+	var rabbit := get_node_or_null("AnimalBackdrop/Rabbit")
+	if rabbit:
+		rabbit.offset_top = 196
+		rabbit.offset_bottom = 316
+	var cat := get_node_or_null("AnimalBackdrop/Cat")
+	if cat:
+		cat.offset_top = 196
+		cat.offset_bottom = 316
+
+
 func _on_resized() -> void:
 	if tile_buttons.is_empty():
 		return
 	var gap := 8.0
 	var horizontal_space := size.x - 48.0
-	var vertical_space := size.y - 220.0
+	var vertical_space := size.y - 320.0
 	var tile := int(clampf((minf(horizontal_space, vertical_space) - gap * float(GRID_SIZE - 1)) / float(GRID_SIZE), 44.0, 120.0))
 	for button in tile_buttons:
 		button.custom_minimum_size = Vector2(tile, tile)
@@ -131,8 +166,9 @@ func _on_resized() -> void:
 	_refresh_tiles()
 
 
-func _on_reset_pressed() -> void:
-	reset_board()
+func _on_menu_pressed() -> void:
+	if _has_progress():
+		Progress.go_menu()
 
 
 func reset_board() -> void:
@@ -142,19 +178,27 @@ func reset_board() -> void:
 	invalid_flash = 0.0
 	score = 0
 	combo = 0
+	mistakes = 0
 	revealing = false
-	paywall_visible = false
+	finished = false
 	if reveal_tween and reveal_tween.is_valid():
 		reveal_tween.kill()
 	if pulse_tween and pulse_tween.is_valid():
 		pulse_tween.kill()
 	reveal_overlay.hide()
-	paywall_overlay.hide()
-	_load_level(current_level)
-	_set_feedback("Harfleri surukleyip kelime yap", Color("#2f5d8a"))
+	if result_overlay:
+		result_overlay.queue_free()
+		result_overlay = null
+	if daily_mode:
+		_load_daily()
+	else:
+		_load_level(current_level)
+	_set_feedback("Harfleri sürükleyip kelime yap", Color("#2f5d8a"))
 	_refresh_hud()
 	_refresh_tiles()
 
+
+# --- Sürükleme -------------------------------------------------------------
 
 func _start_drag(pos: Vector2) -> void:
 	var idx := _tile_at(pos)
@@ -191,18 +235,19 @@ func _end_drag() -> void:
 
 
 func _submit_word() -> void:
-	if paywall_visible:
+	if finished:
 		return
 	var word := _current_word()
 	if not _path_is_straight():
-		_fail_word("Sadece duz cizgi sec!")
+		_fail_word("Sadece düz çizgi seç!")
 		path.clear()
 		_refresh_hud()
 		_refresh_tiles()
 		return
 	var found_word := ""
 	if word.length() < MIN_WORD_LENGTH:
-		_fail_word("Cok kisa! Daha fazla harf sec")
+		if path.size() > 1:
+			_fail_word("Çok kısa! Daha fazla harf seç")
 	elif dictionary.has(word):
 		combo += 1
 		var points := word.length() * 10 * combo
@@ -211,18 +256,21 @@ func _submit_word() -> void:
 		_clear_tiles(path)
 		_cascade_and_fill()
 		found_word = word
+		if _has_progress():
+			Progress.learn_word(word)
 		_mark_word_used(word)
 	else:
 		_fail_word("Listede yok: %s" % word)
 	path.clear()
 	_refresh_hud()
 	_refresh_tiles()
-	if found_word != "":
+	if found_word != "" and not finished:
 		_reveal_word(found_word)
 
 
 func _fail_word(message: String) -> void:
 	combo = 0
+	mistakes += 1
 	invalid_tiles = path.duplicate()
 	invalid_flash = 0.6
 	_set_feedback(message, Color("#c0392b"))
@@ -366,16 +414,16 @@ func _refresh_hud() -> void:
 	_update_level_hud()
 
 
+# --- Kelime kartı ----------------------------------------------------------
+
 func _reveal_word(word: String) -> void:
-	if paywall_visible:
-		return
 	revealing = true
 	var meaning := WordBank.get_meaning(word)
 	reveal_word_label.text = word
 	reveal_meaning_label.text = meaning
 	illustration.set_word(word)
-	pronunciation_label.text = "Okuyus: %s" % _letter_guide(word)
-	reveal_hint.text = "Devam etmek icin dokun"
+	pronunciation_label.text = "Harf harf: %s" % _letter_guide(word)
+	reveal_hint.text = "Deftere eklendi  •  Devam etmek için dokun"
 	reveal_overlay.show()
 	_play_reveal_entrance()
 	_speak_word(word)
@@ -410,9 +458,8 @@ func _play_illustration_pulse() -> void:
 func _on_reveal_overlay_input(event: InputEvent) -> void:
 	if not revealing:
 		return
-	if event is InputEventMouseButton:
-		if event.pressed:
-			_continue_after_reveal()
+	if event is InputEventMouseButton and event.pressed:
+		_continue_after_reveal()
 
 
 func _on_reveal_timeout() -> void:
@@ -429,21 +476,73 @@ func _continue_after_reveal() -> void:
 	if pulse_tween and pulse_tween.is_valid():
 		pulse_tween.kill()
 	reveal_overlay.hide()
-	_set_feedback("Baska kelime bul!", Color("#2f5d8a"))
+	if remaining_words.is_empty():
+		_on_round_complete()
+	else:
+		_set_feedback("Başka kelime bul!", Color("#2f5d8a"))
 
 
-## Round and hint helpers.
+# --- Tur / seviye ----------------------------------------------------------
 
 func _load_level(level: int) -> void:
 	current_level = clampi(level, 1, WordBank.LEVEL_COUNT)
 	level_words = WordBank.get_level_words(current_level)
-	remaining_words = level_words.duplicate()
-	remaining_words.shuffle()
-	used_count = 0
+	remaining_words = _pick_targets(_ordered_by_difficulty(level_words), WORDS_TO_CLEAR)
+	target_total = remaining_words.size()
+	title_label.text = "Seviye %d: %s" % [current_level, WordBank.get_level_title(current_level)]
 	_refill_board()
 	_refresh_hint_word()
 	_refresh_tiles()
 	_update_level_hud()
+
+
+func _load_daily() -> void:
+	level_words = Progress.daily_words() if _has_progress() else WordBank.get_level_words(1)
+	remaining_words = _ordered_by_difficulty(level_words)
+	target_total = remaining_words.size()
+	time_left = float(Progress.DAILY_SECONDS) if _has_progress() else 120.0
+	title_label.text = "Günün Kelimeleri"
+	_refill_board()
+	_refresh_hint_word()
+	_refresh_tiles()
+	_update_level_hud()
+	_update_timer_label()
+
+
+## Seviyedeki 100 kelimelik havuzdan, kolaydan zora yayılmış hedef kelimeler seç.
+func _pick_targets(ordered: Array[String], count: int) -> Array[String]:
+	if ordered.size() <= count:
+		return ordered
+	var picked: Array[String] = []
+	var step := float(ordered.size()) / float(count)
+	for i in range(count):
+		var start := int(i * step)
+		var end := mini(ordered.size() - 1, int((i + 1) * step) - 1)
+		var idx := start + (_board_rng.randi() % maxi(1, end - start + 1))
+		picked.append(ordered[idx])
+	return picked
+
+
+func _ordered_by_difficulty(words: Array[String]) -> Array[String]:
+	var ordered: Array[String] = words.duplicate()
+	ordered.sort_custom(func(a: String, b: String) -> bool: return a.length() < b.length())
+	var group_start := 0
+	for i in range(1, ordered.size() + 1):
+		if i == ordered.size() or ordered[i].length() != ordered[group_start].length():
+			var group := ordered.slice(group_start, i)
+			_shuffle_with_rng(group)
+			for j in range(group.size()):
+				ordered[group_start + j] = group[j]
+			group_start = i
+	return ordered
+
+
+func _shuffle_with_rng(arr: Array) -> void:
+	for i in range(arr.size() - 1, 0, -1):
+		var j := _board_rng.randi() % (i + 1)
+		var tmp = arr[i]
+		arr[i] = arr[j]
+		arr[j] = tmp
 
 
 func _refresh_hint_word() -> void:
@@ -516,35 +615,33 @@ func _place_word_on_board(word: String) -> void:
 		letters[idx] = word[src]
 
 
-func _level_found_count() -> int:
-	return WordBank.WORDS_PER_LEVEL - remaining_words.size()
+func _found_count() -> int:
+	return target_total - remaining_words.size()
 
 
 func _update_level_hud() -> void:
 	if level_label == null:
 		return
-	level_label.text = "SEVIYE %d  %d/%d" % [current_level, _level_found_count(), WordBank.WORDS_PER_LEVEL]
+	if daily_mode:
+		level_label.text = "GÜNÜN KELİMELERİ  %d/%d" % [_found_count(), target_total]
+	else:
+		level_label.text = "SEVİYE %d  %d/%d" % [current_level, _found_count(), target_total]
 
 
 func _mark_word_used(word: String) -> void:
 	if remaining_words.has(word):
 		remaining_words.erase(word)
-		used_count += 1
 		_update_level_hud()
 	if remaining_words.is_empty():
-		_auto_refresh_round()
 		return
 	_refresh_hint_word()
 
 
-func _auto_refresh_round() -> void:
-	# Every target in the active level has been found. Free levels advance;
-	# finishing level 3 opens the prototype paywall instead of entering level 4.
-	if current_level < WordBank.FREE_LEVELS:
-		_load_level(current_level + 1)
-		_set_feedback("Seviye %d hazir! Yeni kelimeleri bul!" % current_level, Color("#1e8e3e"))
+func _on_round_complete() -> void:
+	if daily_mode:
+		_finish_daily()
 	else:
-		_show_paywall()
+		_finish_level()
 
 
 func _refill_board() -> void:
@@ -557,44 +654,142 @@ func _update_hint() -> void:
 	if hint_label == null:
 		return
 	if current_hint_word == "":
-		hint_label.text = "IPUCU: Yeni kelimeler geliyor..."
+		hint_label.text = "İPUCU: Yeni kelimeler geliyor..."
 		return
 	var meaning := WordBank.get_meaning(current_hint_word)
 	var first := current_hint_word.substr(0, 1)
-	hint_label.text = "IPUCU: %s = %s ile baslayan kelime" % [meaning, first]
+	hint_label.text = "İPUCU: %s  (%d harf, %s ile başlar)" % [meaning, current_hint_word.length(), first]
 
 
-## Prototype paywall (no real billing, no store SDK).
-func _show_paywall() -> void:
-	paywall_visible = true
-	revealing = false
-	path.clear()
-	if reveal_tween and reveal_tween.is_valid():
-		reveal_tween.kill()
-	if pulse_tween and pulse_tween.is_valid():
-		pulse_tween.kill()
+# --- Günlük görev zamanlayıcı ---------------------------------------------
+
+func _build_timer_label() -> void:
+	timer_label = Label.new()
+	timer_label.set_anchors_preset(Control.PRESET_TOP_LEFT)
+	timer_label.offset_left = 24
+	timer_label.offset_top = 136
+	timer_label.offset_right = 300
+	timer_label.offset_bottom = 166
+	timer_label.add_theme_font_size_override("font_size", 24)
+	timer_label.add_theme_color_override("font_color", Color("#c0392b"))
+	timer_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(timer_label)
+
+
+func _update_timer_label() -> void:
+	if timer_label == null:
+		return
+	var secs := int(ceil(time_left))
+	@warning_ignore("integer_division")
+	timer_label.text = "SÜRE  %d:%02d" % [secs / 60, secs % 60]
+
+
+# --- Sonuç ekranları --------------------------------------------------------
+
+func _compute_stars() -> int:
+	if mistakes <= 6:
+		return 3
+	if mistakes <= 15:
+		return 2
+	return 1
+
+
+func _finish_level() -> void:
+	if finished:
+		return
+	finished = true
+	var stars := _compute_stars()
+	if _has_progress():
+		Progress.complete_level(current_level, stars, score)
+	var next_level := mini(current_level + 1, WordBank.LEVEL_COUNT)
+	var lines: Array[String] = [
+		"%d kelime öğrendin, %d puan topladın." % [target_total, score],
+		"Kelimeler defterine eklendi.",
+	]
+	var buttons: Array = []
+	if current_level < WordBank.LEVEL_COUNT:
+		buttons.append(["Sonraki Seviye: %s" % WordBank.get_level_title(next_level), UIKit.GREEN, func() -> void:
+			current_level = next_level
+			reset_board()])
+	else:
+		buttons.append(["Tüm seviyeler tamam! Tekrar oyna", UIKit.GREEN, func() -> void: reset_board()])
+	buttons.append(["Kelime Defterim", UIKit.BLUE, _go_notebook])
+	buttons.append(["Menü", UIKit.DARK_PURPLE, _go_menu])
+	_show_result("Seviye %d tamamlandı!" % current_level, stars, lines, buttons)
+
+
+func _go_notebook() -> void:
+	if _has_progress():
+		Progress.go_notebook()
+
+
+func _go_menu() -> void:
+	if _has_progress():
+		Progress.go_menu()
+
+
+func _go_levels() -> void:
+	if _has_progress():
+		Progress.start_level_game()
+
+
+func _finish_daily() -> void:
+	if finished:
+		return
+	finished = true
+	var found := _found_count()
+	if _has_progress():
+		Progress.complete_daily(found, score)
+	var stars := 3 if found >= target_total else (2 if found >= int(target_total * 0.6) else (1 if found > 0 else 0))
+	var title := "Günün görevi tamam!" if found >= target_total else "Süre bitti!"
+	var lines: Array[String] = [
+		"%d / %d kelime buldun, %d puan." % [found, target_total, score],
+		"Serin: %d gün. Yarın yeni kelimelerle görüşürüz!" % (Progress.streak if _has_progress() else 1),
+	]
+	var buttons: Array = [
+		["Kelime Defterim", UIKit.BLUE, _go_notebook],
+		["Seviyelere Devam", UIKit.GREEN, _go_levels],
+		["Menü", UIKit.DARK_PURPLE, _go_menu],
+	]
+	_show_result(title, stars, lines, buttons)
+
+
+func _show_result(title: String, stars: int, lines: Array[String], buttons: Array) -> void:
 	reveal_overlay.hide()
-	paywall_title_label.text = "4. SEVIYE KILITLI"
-	paywall_price_label.text = "Prototip fiyat: 19,99 TL"
-	paywall_message_label.hide()
-	paywall_overlay.show()
-	_set_feedback("Seviye 3 tamamlandi! Seviye 4 kilitli.", Color("#c0392b"))
+	result_overlay = Control.new()
+	UIKit.full_rect(result_overlay)
+	result_overlay.mouse_filter = Control.MOUSE_FILTER_STOP
+	var dim := ColorRect.new()
+	dim.color = Color(0.18, 0.08, 0.3, 0.6)
+	result_overlay.add_child(UIKit.full_rect(dim))
+	var center := CenterContainer.new()
+	UIKit.full_rect(center)
+	center.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	result_overlay.add_child(center)
+	var panel := UIKit.make_panel(UIKit.CREAM_LIGHT, UIKit.ORANGE, 30)
+	panel.custom_minimum_size = Vector2(clampf(size.x - 60.0, 280.0, 480.0), 0)
+	center.add_child(panel)
+	var box := VBoxContainer.new()
+	box.add_theme_constant_override("separation", 12)
+	panel.add_child(box)
+	box.add_child(UIKit.make_label(title, 36, UIKit.PINK))
+	var row := UIKit.StarRow.new(stars, 3, 44.0)
+	row.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	box.add_child(row)
+	for l in lines:
+		box.add_child(UIKit.make_label(l, 20, UIKit.TEXT_DARK))
+	for b in buttons:
+		var btn := UIKit.make_button(b[0], b[1], 22, 60)
+		btn.pressed.connect(b[2])
+		box.add_child(btn)
+	add_child(result_overlay)
+	panel.pivot_offset = panel.size * 0.5
+	panel.scale = Vector2(0.7, 0.7)
+	var tw := create_tween()
+	tw.tween_property(panel, "scale", Vector2.ONE, 0.4).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 
 
-func _on_buy_pressed() -> void:
-	paywall_message_label.text = "Demo: Gercek odeme yok"
-	paywall_message_label.show()
-
-
-func _on_paywall_close_pressed() -> void:
-	paywall_overlay.hide()
-	paywall_visible = false
-	# Keep the game playable: replay the current (level 3) target pool.
-	_load_level(current_level)
-	_set_feedback("Seviye 4 kilitli (demo). Seviye 3 tekrar oynanabilir.", Color("#2f5d8a"))
-
-
-## Pronunciation helpers.
+# --- Telaffuz ----------------------------------------------------------------
 
 func _on_listen_pressed() -> void:
 	_speak_word(reveal_word_label.text)
@@ -603,19 +798,17 @@ func _on_listen_pressed() -> void:
 func _speak_word(word: String) -> void:
 	if word == "":
 		return
-	var guide := _letter_guide(word)
+	if _has_progress() and not Progress.sound_on:
+		return
 	var voice := _english_voice_id()
 	if voice.is_empty():
-		pronunciation_label.text = "Ses yok. Sozcugu harf harf oku: %s" % guide
+		pronunciation_label.text = "Harf harf: %s" % _letter_guide(word)
 		return
 	DisplayServer.tts_stop()
 	DisplayServer.tts_speak(word, voice, 50, 1.0, 0.9)
-	pronunciation_label.text = "Dinle: %s (harfler: %s)" % [word, guide]
 
 
 func _english_voice_id() -> String:
-	# Pick the first English voice so the word is spoken in English instead
-	# of the OS default voice, which can be a localized voice such as Turkish.
 	var voices := DisplayServer.tts_get_voices_for_language("en")
 	if voices.is_empty():
 		return ""
