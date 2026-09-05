@@ -20,11 +20,19 @@ var illustration: Control
 var option_buttons: Array[Button] = []
 var feedback_label: Label
 var card: PanelContainer
+## Sahneyle birlikte yok olan zamanlayıcı: geç gelen tetiklemeler serbest bırakılmış
+## düğümlere ulaşamaz.
+var next_timer: Timer
 
 
 func _ready() -> void:
 	rng.randomize()
 	UIKit.add_backdrop(self)
+	next_timer = Timer.new()
+	next_timer.one_shot = true
+	next_timer.wait_time = 1.1
+	next_timer.timeout.connect(_on_next_question)
+	add_child(next_timer)
 	questions = Progress.quiz_pool(QUESTION_COUNT)
 	if questions.size() < 4:
 		Progress.go_notebook()
@@ -53,7 +61,7 @@ func _build() -> void:
 	center.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	root.add_child(center)
 	card = UIKit.make_panel(UIKit.CREAM_LIGHT, UIKit.ORANGE, 28)
-	card.custom_minimum_size = Vector2(clampf(size.x - 40.0, 280.0, 540.0), 0)
+	card.custom_minimum_size = Vector2(clampf(get_viewport_rect().size.x - 40.0, 280.0, 540.0), 0)
 	center.add_child(card)
 	var box := VBoxContainer.new()
 	box.add_theme_constant_override("separation", 12)
@@ -151,9 +159,12 @@ func _on_option(i: int) -> void:
 		feedback_label.add_theme_color_override("font_color", Color("#c0392b"))
 		feedback_label.text = "Doğrusu: %s" % word
 	_speak(word)
-	get_tree().create_timer(1.1).timeout.connect(func() -> void:
-		index += 1
-		_show_question())
+	next_timer.start()
+
+
+func _on_next_question() -> void:
+	index += 1
+	_show_question()
 
 
 func _show_result() -> void:
@@ -165,7 +176,7 @@ func _show_result() -> void:
 	center.mouse_filter = Control.MOUSE_FILTER_PASS
 	add_child(center)
 	var panel := UIKit.make_panel(UIKit.CREAM_LIGHT, UIKit.PURPLE, 30)
-	panel.custom_minimum_size = Vector2(clampf(size.x - 60.0, 280.0, 500.0), 0)
+	panel.custom_minimum_size = Vector2(clampf(get_viewport_rect().size.x - 60.0, 280.0, 500.0), 0)
 	center.add_child(panel)
 	var box := VBoxContainer.new()
 	box.add_theme_constant_override("separation", 14)

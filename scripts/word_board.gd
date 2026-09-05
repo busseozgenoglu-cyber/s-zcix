@@ -64,7 +64,9 @@ var result_overlay: Control
 @onready var pronunciation_label: Label = $RevealOverlay/RevealCenter/RevealPanel/VBox/PronunciationLabel
 @onready var level_label: Label = $LevelLabel
 @onready var menu_button: Button = $ResetButton
-@onready var music_player: AudioStreamPlayer = $BackgroundMusic
+## Kelime kartını otomatik kapatan zamanlayıcı; her kartta yeniden başlatılır,
+## böylece eski bir kartın süresi yeni kartı erken kapatamaz.
+var reveal_timer: Timer
 
 
 func _has_progress() -> bool:
@@ -88,12 +90,14 @@ func _ready() -> void:
 	invalid_style = _make_tile_style(Color("#e63946"), Color("#ffffff"))
 	_layout_hud()
 	_on_resized()
+	reveal_timer = Timer.new()
+	reveal_timer.one_shot = true
+	reveal_timer.wait_time = REVEAL_SECONDS
+	reveal_timer.timeout.connect(_on_reveal_timeout)
+	add_child(reveal_timer)
 	if _has_progress():
 		daily_mode = Progress.mode == Progress.Mode.DAILY
 		current_level = Progress.current_level
-		music_player.playing = Progress.music_on
-		if not Progress.music_on:
-			music_player.stop()
 	_board_rng.seed = hash(Progress.today_key()) if daily_mode else int(Time.get_unix_time_from_system())
 	if daily_mode:
 		_build_timer_label()
@@ -106,7 +110,8 @@ func _process(delta: float) -> void:
 		if invalid_flash == 0.0:
 			invalid_tiles.clear()
 		_refresh_tiles()
-	if daily_mode and not finished and not Engine.is_editor_hint():
+	# Kelime kartı açıkken süre akmaz; çocuk anlamı okurken zaman kaybetmez.
+	if daily_mode and not finished and not revealing and not Engine.is_editor_hint():
 		time_left = maxf(0.0, time_left - delta)
 		_update_timer_label()
 		if time_left <= 0.0:
@@ -181,6 +186,8 @@ func reset_board() -> void:
 	mistakes = 0
 	revealing = false
 	finished = false
+	if reveal_timer:
+		reveal_timer.stop()
 	if reveal_tween and reveal_tween.is_valid():
 		reveal_tween.kill()
 	if pulse_tween and pulse_tween.is_valid():
@@ -427,7 +434,7 @@ func _reveal_word(word: String) -> void:
 	reveal_overlay.show()
 	_play_reveal_entrance()
 	_speak_word(word)
-	get_tree().create_timer(REVEAL_SECONDS).timeout.connect(_on_reveal_timeout)
+	reveal_timer.start()
 
 
 func _play_reveal_entrance() -> void:
@@ -471,6 +478,7 @@ func _continue_after_reveal() -> void:
 	if not revealing:
 		return
 	revealing = false
+	reveal_timer.stop()
 	if reveal_tween and reveal_tween.is_valid():
 		reveal_tween.kill()
 	if pulse_tween and pulse_tween.is_valid():
@@ -744,7 +752,7 @@ func _finish_daily() -> void:
 	var title := "Günün görevi tamam!" if found >= target_total else "Süre bitti!"
 	var lines: Array[String] = [
 		"%d / %d kelime buldun, %d puan." % [found, target_total, score],
-		"Serin: %d gün. Yarın yeni kelimelerle görüşürüz!" % (Progress.streak if _has_progress() else 1),
+		"Serin: %d gün. Yarın yeni kelimelerle görüşürüz!" % (Progress.current_streak() if _has_progress() else 1),
 	]
 	var buttons: Array = [
 		["Kelime Defterim", UIKit.BLUE, _go_notebook],
@@ -767,7 +775,7 @@ func _show_result(title: String, stars: int, lines: Array[String], buttons: Arra
 	center.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	result_overlay.add_child(center)
 	var panel := UIKit.make_panel(UIKit.CREAM_LIGHT, UIKit.ORANGE, 30)
-	panel.custom_minimum_size = Vector2(clampf(size.x - 60.0, 280.0, 480.0), 0)
+	panel.custom_minimum_size = Vector2(clampf(get_viewport_rect().size.x - 60.0, 280.0, 480.0), 0)
 	center.add_child(panel)
 	var box := VBoxContainer.new()
 	box.add_theme_constant_override("separation", 12)

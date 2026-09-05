@@ -5,7 +5,6 @@ const WordBank := preload("res://data/word_bank.gd")
 const UIKit := preload("res://scripts/ui_kit.gd")
 const CAT_TEX := preload("res://assets/images/img-69715444-5126-4ee3-bc65-b090abf1b32e-1787003493078-0_1787003493078_an695b00.png")
 const RABBIT_TEX := preload("res://assets/images/img-69715444-5126-4ee3-bc65-b090abf1b32e-1787003493226-0_1787003493226_2bxuf32l.png")
-const BGM := preload("res://assets/audio/bg_music.wav")
 
 var music_button: Button
 
@@ -13,7 +12,6 @@ var music_button: Button
 func _ready() -> void:
 	UIKit.add_backdrop(self)
 	_add_mascots()
-	_build_music()
 	_build_layout()
 
 
@@ -42,16 +40,6 @@ func _add_mascots() -> void:
 	add_child(rabbit)
 
 
-func _build_music() -> void:
-	if not Progress.music_on:
-		return
-	var player := AudioStreamPlayer.new()
-	player.stream = BGM
-	player.volume_db = -9.0
-	player.autoplay = true
-	add_child(player)
-
-
 func _build_layout() -> void:
 	var margin := MarginContainer.new()
 	UIKit.full_rect(margin)
@@ -71,7 +59,6 @@ func _build_layout() -> void:
 	column.add_theme_constant_override("separation", 16)
 	column.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	center.add_child(column)
-	column.resized.connect(func() -> void: pass)
 
 	# Sütun genişliği: ekrana göre en fazla 560 px.
 	var width := clampf(get_viewport_rect().size.x - 56.0, 280.0, 560.0)
@@ -93,11 +80,13 @@ func _build_layout() -> void:
 
 	var daily_text := "GÜNÜN KELİMELERİ"
 	var daily_color := UIKit.ORANGE
-	if Progress.daily_done_today():
+	var daily_done := Progress.daily_done_today()
+	if daily_done:
 		var r := Progress.daily_result_today()
-		daily_text = "GÜNÜN KELİMELERİ  -  Bugün %d/%d bulundu" % [int(r.get("found", 0)), Progress.DAILY_WORD_COUNT]
+		daily_text = "GÜNÜN KELİMELERİ  -  Bugün %d/%d, yarın yenisi!" % [int(r.get("found", 0)), Progress.DAILY_WORD_COUNT]
 		daily_color = UIKit.TEAL
-	var daily := UIKit.make_button(daily_text, daily_color, 22, 68)
+	var daily := UIKit.make_button(daily_text, daily_color, 20 if daily_done else 22, 68)
+	daily.disabled = daily_done
 	daily.pressed.connect(func() -> void: Progress.start_daily_game())
 	column.add_child(daily)
 
@@ -134,7 +123,7 @@ func _build_stats_card() -> PanelContainer:
 	panel.add_child(grid)
 	grid.add_child(_stat("%d" % Progress.learned_count(), "öğrenilen\nkelime", UIKit.BLUE))
 	grid.add_child(_stat("%d" % Progress.total_stars(), "yıldız", UIKit.YELLOW.darkened(0.15)))
-	grid.add_child(_stat("%d gün" % Progress.streak, "seri", UIKit.PINK))
+	grid.add_child(_stat("%d gün" % Progress.current_streak(), "seri", UIKit.PINK))
 	grid.add_child(_stat("%d" % Progress.total_score, "toplam\npuan", UIKit.GREEN.darkened(0.1)))
 	return panel
 
@@ -155,13 +144,8 @@ func _music_text() -> String:
 
 
 func _on_music_toggle() -> void:
-	Progress.music_on = not Progress.music_on
-	Progress.save_game()
+	Progress.set_music(not Progress.music_on)
 	music_button.text = _music_text()
-	for child in get_children():
-		if child is AudioStreamPlayer:
-			child.queue_free()
-	_build_music()
 
 
 func _show_howto() -> void:

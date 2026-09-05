@@ -36,7 +36,7 @@ func _build() -> void:
 		center.size_flags_vertical = Control.SIZE_EXPAND_FILL
 		root.add_child(center)
 		var panel := UIKit.make_panel()
-		panel.custom_minimum_size = Vector2(minf(size.x - 40.0, 480.0), 0)
+		panel.custom_minimum_size = Vector2(clampf(get_viewport_rect().size.x - 40.0, 280.0, 480.0), 0)
 		center.add_child(panel)
 		var box := VBoxContainer.new()
 		box.add_theme_constant_override("separation", 14)

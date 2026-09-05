@@ -32,11 +32,33 @@ var sound_on := true
 
 var _cfg := ConfigFile.new()
 
+## Tek arka plan müziği: sahneler arasında kesilmeden çalar.
+const BGM := preload("res://assets/audio/bg_music.wav")
+var _music: AudioStreamPlayer
+
 
 func _ready() -> void:
 	load_game()
-	_touch_streak()
+	_music = AudioStreamPlayer.new()
+	_music.stream = BGM
+	_music.volume_db = -9.0
+	add_child(_music)
+	apply_music()
 	_maybe_setup_screenshot_harness()
+
+
+func apply_music() -> void:
+	if music_on:
+		if not _music.playing:
+			_music.play()
+	else:
+		_music.stop()
+
+
+func set_music(on: bool) -> void:
+	music_on = on
+	save_game()
+	apply_music()
 
 
 # --- Kayıt ---------------------------------------------------------------
@@ -92,6 +114,7 @@ func learn_word(word: String) -> void:
 		learned[w] = entry
 	else:
 		learned[w] = {"count": 1, "first": now, "last": now, "correct": 0, "wrong": 0}
+	_record_activity()
 	save_game()
 
 
@@ -150,6 +173,7 @@ func complete_level(level: int, stars: int, score: int) -> void:
 	total_score += score
 	if level >= current_level and level < WordBank.LEVEL_COUNT:
 		current_level = level + 1
+	_record_activity()
 	save_game()
 
 
@@ -193,6 +217,9 @@ func daily_words() -> Array[String]:
 
 
 func complete_daily(found: int, score: int) -> void:
+	# Günlük görev günde bir kez sayılır; tekrar oynanırsa sonuç ve puan yeniden yazılmaz.
+	if daily_done_today():
+		return
 	var stars := 0
 	if found >= DAILY_WORD_COUNT:
 		stars = 3
@@ -202,20 +229,28 @@ func complete_daily(found: int, score: int) -> void:
 		stars = 1
 	daily_results[today_key()] = {"found": found, "stars": stars, "score": score}
 	total_score += score
+	_record_activity()
 	save_game()
 
 
-func _touch_streak() -> void:
+## Seri yalnızca gerçek oyun etkinliğiyle (kelime bulma, seviye/görev bitirme) ilerler.
+func _record_activity() -> void:
 	var today := today_key()
 	if last_play_day == today:
 		return
-	if last_play_day != "":
-		var yesterday := _day_offset(today, -1)
-		streak = streak + 1 if last_play_day == yesterday else 1
+	if last_play_day != "" and last_play_day == _day_offset(today, -1):
+		streak += 1
 	else:
 		streak = 1
 	last_play_day = today
-	save_game()
+
+
+## Gösterilecek seri: son etkinlik bugün veya dün değilse seri kırılmıştır (0).
+func current_streak() -> int:
+	var today := today_key()
+	if last_play_day == today or last_play_day == _day_offset(today, -1):
+		return streak
+	return 0
 
 
 static func _day_offset(day: String, offset_days: int) -> String:

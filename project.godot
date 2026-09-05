@@ -29,6 +29,7 @@ window/handheld/orientation=1
 
 [audio]
 
+general/text_to_speech=true
 general/ios/session_category=3
 
 [dotnet]
